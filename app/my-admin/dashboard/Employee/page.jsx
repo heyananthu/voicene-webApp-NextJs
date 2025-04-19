@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import EmployersList from './_components/EmployersList';
+import { ToastContainer, toast } from 'react-toastify';
+import { Bounce } from 'react-toastify'
 
 function Page() {
   const router = useRouter()
@@ -16,6 +18,24 @@ function Page() {
     skills: [''],
     photo: null,
   });
+
+  useEffect(() => {
+    const adminStatus = localStorage.getItem('admin')
+    if (adminStatus !== 'authenticated') {
+      router.push('/my-admin')
+      toast.error('Failed', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
+  }, [router])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,7 +90,7 @@ function Page() {
   };
 
   return (
-    <div className="w-full bg-white h-full lg:h-screen mt-20">
+    <div className="w-full bg-white h-screen lg:h-screen mt-20">
       <div className="flex justify-end">
         <button
           className="bg-purple-600 py-2 px-5 text-white  rounded-md cursor-pointer"
@@ -185,6 +205,19 @@ function Page() {
           </form>
         </div>
       </dialog>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
     </div>
   );
 }

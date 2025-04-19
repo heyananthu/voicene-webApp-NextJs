@@ -18,6 +18,12 @@ function EmployersList() {
         photo: null,
     });
     const router = useRouter();  // Initialize the useRouter hook
+    useEffect(() => {
+        const adminStatus = localStorage.getItem('admin')
+        if (adminStatus !== 'authenticated') {
+            router.push('/my-admin')
+        }
+    }, [router])
 
     useEffect(() => {
         const fetchEmployers = async () => {
