@@ -38,7 +38,7 @@ function Page() {
       if (response.status === 201) {
         alert('Data entered successfully');
         console.log('Employer created:', response.data);
-        router.push('/my-admin/Employee')
+        router.push('/my-admin/dashboard/Employee')
       }
     } catch (error) {
       console.error('Error creating employer:', error);

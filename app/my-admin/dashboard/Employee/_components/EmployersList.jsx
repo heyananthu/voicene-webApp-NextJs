@@ -124,37 +124,40 @@ function EmployersList() {
     return (
         <div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 mt-5">
-                {employers.map((emp) => (
-                    <div key={emp._id} className="card bg-gray-200 w-full shadow-sm hover:shadow-md transition">
-                        <figure className="px-10 pt-10">
-                            <img
-                                src={emp.photo ? `/uploads/${emp.photo}` : 'https://via.placeholder.com/150'}
-                                alt={emp.name}
-                                className="rounded-full w-40 h-40 object-cover"
-                            />
-                        </figure>
-                        <div className="card-body items-center text-center">
-                            <h2 className="card-title">{emp.name}</h2>
-                            <p className="text-sm text-gray-600">{emp.position}</p>
-                            <p className="text-sm">Experience: {emp.experiences.join(', ')}</p>
-                            <p className="text-sm">Skills: {emp.skills.join(', ')}</p>
-                            <div className="card-actions mt-4">
-                                <button
-                                    className="btn btn-success"
-                                    onClick={() => handleUpdate(emp._id)}
-                                >
-                                    Update
-                                </button>
-                                <button
-                                    className="btn btn-error"
-                                    onClick={() => handleDelete(emp._id)}
-                                >
-                                    Delete
-                                </button>
+                {employers.length === 0 ?
+                    <p className='text-center'>No Details Found</p>
+                    :
+                    employers.map((emp) => (
+                        <div key={emp._id} className="card bg-gray-200 w-full shadow-sm hover:shadow-md transition">
+                            <figure className="px-10 pt-10">
+                                <img
+                                    src={emp.photo ? `/uploads/${emp.photo}` : 'https://via.placeholder.com/150'}
+                                    alt={emp.name}
+                                    className="rounded-full w-40 h-40 object-cover"
+                                />
+                            </figure>
+                            <div className="card-body items-center text-center">
+                                <h2 className="card-title">{emp.name}</h2>
+                                <p className="text-sm text-gray-600">{emp.position}</p>
+                                <p className="text-sm">Experience: {emp.experiences.join(', ')}</p>
+                                <p className="text-sm">Skills: {emp.skills.join(', ')}</p>
+                                <div className="card-actions mt-4">
+                                    <button
+                                        className="btn btn-success"
+                                        onClick={() => handleUpdate(emp._id)}
+                                    >
+                                        Update
+                                    </button>
+                                    <button
+                                        className="btn btn-error"
+                                        onClick={() => handleDelete(emp._id)}
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
             </div>
 
             {/* Update Form Modal */}
