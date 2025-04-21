@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={poppins.variable}>
       <body
-        className="font-poppins bg-white"
+        className="font-poppins bg-white h-screen"
       >
         {children}
       </body>

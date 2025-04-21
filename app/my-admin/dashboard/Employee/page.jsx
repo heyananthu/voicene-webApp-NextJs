@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import EmployersList from './_components/EmployersList';
-import { ToastContainer, toast } from 'react-toastify';
-import { Bounce } from 'react-toastify'
+import { ToastContainer, toast, Bounce } from 'react-toastify';
 
 function Page() {
-  const router = useRouter()
+  const router = useRouter();
+
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -19,23 +19,26 @@ function Page() {
     photo: null,
   });
 
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
-    const adminStatus = localStorage.getItem('admin')
-    if (adminStatus !== 'authenticated') {
-      router.push('/my-admin')
-      toast.error('Failed', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-      });
+    // Ensure this only runs on client
+    setIsClient(true);
+    if (typeof window !== 'undefined') {
+      const adminStatus = localStorage.getItem('admin');
+      if (adminStatus !== 'authenticated') {
+        toast.error('Unauthorized access', {
+          position: 'top-center',
+          autoClose: 3000,
+          theme: 'colored',
+          transition: Bounce,
+        });
+        router.push('/my-admin');
+      }
     }
-  }, [router])
+  }, [router]);
+
+  if (!isClient) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,89 +48,58 @@ function Page() {
     formData.append('email', form.email);
     formData.append('contact', form.contact);
     formData.append('position', form.position);
-
-    form.experiences.forEach((exp) => formData.append('experiences[]', exp));
     form.skills.forEach((skill) => formData.append('skills[]', skill));
+    form.experiences.forEach((exp) => formData.append('experiences[]', exp));
     if (form.photo) formData.append('photo', form.photo);
 
     try {
-      const response = await axios.post('/api/employees', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
+      const response = await axios.post('/api/employees', formData);
       if (response.status === 200) {
         toast.success('New Details Added', {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
+          position: 'top-center',
+          theme: 'colored',
           transition: Bounce,
         });
-        console.log('Employer created:', response.data);
-        setTimeout(() => {
-          router.push('/my-admin/dashboard/Employee')
-        }, 1000)
-      }
-      if (response.status === 409) {
+        setTimeout(() => router.push('/my-admin/dashboard/Employee'), 1000);
+      } else if (response.status === 409) {
         toast.error('Details Already Exist', {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
+          position: 'top-center',
+          theme: 'colored',
           transition: Bounce,
         });
-
       }
+    } catch (err) {
+      toast.error('Error submitting form', {
+        position: 'top-center',
+        theme: 'colored',
+        transition: Bounce,
+      });
+      console.error('Form submission error:', err);
     }
-    catch (error) {
-      console.error('Error creating employer:', error);
-    }
+  };
+
+  const updateFieldArray = (type, value, index) => {
+    const updated = [...form[type]];
+    updated[index] = value;
+    setForm({ ...form, [type]: updated });
+  };
+
+  const addField = (type) => {
+    setForm({ ...form, [type]: [...form[type], ''] });
   };
 
   const handleFileChange = (e) => {
     setForm({ ...form, photo: e.target.files[0] });
   };
 
-  const handleSkillsChange = (e, index) => {
-    const newSkills = [...form.skills];
-    newSkills[index] = e.target.value;
-    setForm({ ...form, skills: newSkills });
-  };
-
-  const handleExperiencesChange = (e, index) => {
-    const newExperiences = [...form.experiences];
-    newExperiences[index] = e.target.value;
-    setForm({ ...form, experiences: newExperiences });
-  };
-
-  const addSkillField = () => {
-    setForm({ ...form, skills: [...form.skills, ''] });
-  };
-
-  const addExperienceField = () => {
-    setForm({ ...form, experiences: [...form.experiences, ''] });
-  };
-
-  const [hasMounted, setHasMounted] = useState(false);
-useEffect(() => {
-  setHasMounted(true);
-}, []);
-
-if (!hasMounted) return null; // ✅ Good
-
   return (
-    <div className="w-full bg-white h-full lg:h-full mt-20">
-      <div className="flex justify-end">
+    <div
+      className="w-full bg-white min-h-screen mt-20 px-4"
+      suppressHydrationWarning
+    >
+      <div className="flex justify-end mb-4">
         <button
-          className="bg-purple-600 py-2 px-5 text-white  rounded-md cursor-pointer"
+          className="bg-purple-600 py-2 px-5 text-white rounded-md hover:scale-105 transition"
           onClick={() => document.getElementById('my_modal_1').showModal()}
         >
           Create +
@@ -137,12 +109,12 @@ if (!hasMounted) return null; // ✅ Good
       <EmployersList />
 
       <dialog id="my_modal_1" className="modal">
-        <div className="modal-box bg-gray-200">
-          <form onSubmit={handleSubmit} className="p-4 space-y-4 text-black">
+        <div className="modal-box bg-gray-200 max-w-xl">
+          <form onSubmit={handleSubmit} className="space-y-4 text-black">
             <input
               type="text"
               placeholder="Name"
-              className="p-2 border w-full"
+              className="input input-bordered w-full"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               required
@@ -150,7 +122,7 @@ if (!hasMounted) return null; // ✅ Good
             <input
               type="email"
               placeholder="Email"
-              className="p-2 border w-full"
+              className="input input-bordered w-full"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
@@ -158,7 +130,7 @@ if (!hasMounted) return null; // ✅ Good
             <input
               type="text"
               placeholder="Contact"
-              className="p-2 border w-full"
+              className="input input-bordered w-full"
               value={form.contact}
               onChange={(e) => setForm({ ...form, contact: e.target.value })}
               required
@@ -166,92 +138,84 @@ if (!hasMounted) return null; // ✅ Good
             <input
               type="text"
               placeholder="Position"
-              className="p-2 border w-full"
+              className="input input-bordered w-full"
               value={form.position}
               onChange={(e) => setForm({ ...form, position: e.target.value })}
               required
             />
 
-            {/* Dynamic Experiences */}
-            <div className="space-y-2">
-              <label>Experience</label>
-              {form.experiences.map((experience, index) => (
+            {/* Experience Fields */}
+            <div>
+              <label className="font-semibold">Experience</label>
+              {form.experiences.map((exp, index) => (
                 <input
                   key={index}
                   type="text"
                   placeholder="Experience"
-                  className="p-2 border w-full"
-                  value={experience}
-                  onChange={(e) => handleExperiencesChange(e, index)}
-                  required
+                  className="input input-bordered w-full mt-1"
+                  value={exp}
+                  onChange={(e) =>
+                    updateFieldArray('experiences', e.target.value, index)
+                  }
                 />
               ))}
               <button
                 type="button"
-                className="bg-purple-600 text-white py-1 px-8 hover:scale-105 duration-300 cursor-pointer rounded"
-                onClick={addExperienceField}
+                className="btn btn-sm mt-2 bg-purple-600 text-white"
+                onClick={() => addField('experiences')}
               >
-                Add
+                + Add Experience
               </button>
             </div>
 
-            {/* Dynamic Skills */}
-            <div className="space-y-2">
-              <label>Skills</label>
+            {/* Skills Fields */}
+            <div>
+              <label className="font-semibold">Skills</label>
               {form.skills.map((skill, index) => (
                 <input
                   key={index}
                   type="text"
                   placeholder="Skill"
-                  className="p-2 border w-full"
+                  className="input input-bordered w-full mt-1"
                   value={skill}
-                  onChange={(e) => handleSkillsChange(e, index)}
-                  required
+                  onChange={(e) =>
+                    updateFieldArray('skills', e.target.value, index)
+                  }
                 />
               ))}
               <button
                 type="button"
-                className="bg-purple-600 text-white py-1 px-8 hover:scale-105 duration-300 cursor-pointer rounded"
-                onClick={addSkillField}
+                className="btn btn-sm mt-2 bg-purple-600 text-white"
+                onClick={() => addField('skills')}
               >
-                Add
+                + Add Skill
               </button>
             </div>
 
             <input
               type="file"
               onChange={handleFileChange}
-              className="p-2 border w-full"
+              className="file-input file-input-bordered w-full"
               accept="image/*"
             />
 
-            <div className="flex justify-end gap-4 mt-4">
-              <button
-                type="submit"
-                className="bg-purple-600 text-white px-3 py-2 rounded cursor-pointer"
-              >
+            <div className="flex justify-end gap-3">
+              <button type="submit" className="btn bg-purple-600 text-white">
                 Submit
               </button>
-              <button className="btn" type="button" onClick={() => document.getElementById('my_modal_1').close()}>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => document.getElementById('my_modal_1').close()}
+              >
                 Close
               </button>
             </div>
           </form>
         </div>
       </dialog>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-        transition={Bounce}
-      />
+
+      <ToastContainer />
     </div>
   );
 }
