@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';  // Next.js router hook
+import Image from 'next/image';
 
 function EmployersList() {
     const [employers, setEmployers] = useState([]);
@@ -132,7 +133,7 @@ function EmployersList() {
                     employers.map((emp) => (
                         <div key={emp._id} className="card  w-full shadow-md ">
                             <figure className="px-10 pt-10">
-                                <img
+                                <Image
                                     src={emp.photo ? `/uploads/${emp.photo}` : 'https://via.placeholder.com/150'}
                                     alt={emp.name}
                                     className="rounded-full w-40 h-40 object-cover"
