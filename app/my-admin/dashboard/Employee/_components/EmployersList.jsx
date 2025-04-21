@@ -126,42 +126,57 @@ function EmployersList() {
 
     return (
         <div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 mt-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-5">
                 {employers.length === 0 ?
                     <p className='text-center'>No Details Found</p>
                     :
                     employers.map((emp) => (
-                        <div key={emp._id} className="card  w-full shadow-md ">
-                            <figure className="px-10 pt-10">
-                                <Image
-                                    src={emp.photo ? `/uploads/${emp.photo}` : 'https://via.placeholder.com/150'}
-                                    alt={emp.name}
-                                    className="rounded-full w-40 h-40 object-cover"
-                                    width={160}
-                                    height={160}
-                                />
-                            </figure>
-                            <div className="card-body items-center text-center">
-                                <h2 className="card-title">{emp.name}</h2>
-                                <p className="text-sm text-gray-600">{emp.position}</p>
-                                <p className="text-sm">Experience: {emp.experiences.join(', ')}</p>
-                                <p className="text-sm">Skills: {emp.skills.join(', ')}</p>
-                                <div className="card-actions mt-4">
-                                    <button
-                                        className="btn btn-success"
-                                        onClick={() => handleUpdate(emp._id)}
-                                    >
-                                        Update
-                                    </button>
-                                    <button
-                                        className="btn btn-error"
-                                        onClick={() => handleDelete(emp._id)}
-                                    >
-                                        Delete
-                                    </button>
+                        <div className="m-10 card " key={emp._id}>
+                            <div className="rounded-lg border bg-white px-4 pt-8 pb-10 shadow-lg">
+                                <div className="relative mx-auto w-36 rounded-full">
+                                    <span className="absolute right-0 m-3 h-3 w-3 rounded-full bg-green-500 ring-2 ring-green-300 ring-offset-2"></span>
+                                    <Image className="mx-auto h-32 w-32 rounded-full object-cover" src={emp.photo ? `/uploads/${emp.photo}` : 'https://via.placeholder.com/150'} alt="profile" width={160} height={160} />
+                                </div>
+                                <h1 className="my-1 text-center text-xl font-bold leading-8 text-gray-900">{emp.name}</h1>
+                                <h3 className="font-lg text-semibold text-center leading-6 text-gray-600">{emp.position}</h3>
+
+                                <ul className="mt-3 divide-y rounded bg-gray-100 py-2 px-3 text-gray-600 shadow-sm hover:text-gray-700 hover:shadow">
+                                    <li className="flex items-center py-3 text-sm">
+                                        <span>Email</span>
+                                        <span className="ml-auto"><span className="rounded-full bg-green-200 py-1 px-2 text-xs font-medium text-green-700">{emp.email}</span></span>
+                                    </li>
+                                    <li className="flex items-center py-3 text-sm">
+                                        <span>Contact</span>
+                                        <span className="ml-auto">{emp.contact}</span>
+                                    </li>
+                                    <li className="flex items-center py-3 text-sm">
+                                        <span>Total Experience</span>
+                                        <span className="ml-auto">{emp.experiences.join(', ')}</span>
+                                    </li>
+                                    <li className="flex items-center py-3 text-sm">
+                                        <span>Skills</span>
+                                        <span className="ml-auto">{emp.skills.join(', ')}</span>
+                                    </li>
+                                </ul>
+                                <div className="card-actions mt-4 flex justify-center">
+                                    <div className='space-x-3'>
+                                        <button
+                                            className="btn btn-success"
+                                            onClick={() => handleUpdate(emp._id)}
+                                        >
+                                            Update
+                                        </button>
+                                        <button
+                                            className="btn btn-error"
+                                            onClick={() => handleDelete(emp._id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                     ))}
             </div>
 
