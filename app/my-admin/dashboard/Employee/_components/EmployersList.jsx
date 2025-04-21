@@ -44,18 +44,14 @@ function EmployersList() {
 
     const handleDelete = async (id) => {
         try {
-            // Delete the employer via API
-            await axios.delete(`/api/employees/${id}`);
-            // Update state after deleting
-            setEmployers((prevEmployers) => prevEmployers.filter((emp) => emp._id !== id));
-            alert('Employer deleted successfully!');
-            // After deletion, navigate back to the list or refresh the page
-
+            const res = await axios.delete('/api/employee', { data: { id } });
+            console.log(res.data.message);
+            // Refresh or update state
         } catch (error) {
             console.error('Error deleting employer:', error);
-            alert('Error deleting employer!');
         }
     };
+
 
     const handleUpdate = (employer) => {
         setEditingEmployer(employer);

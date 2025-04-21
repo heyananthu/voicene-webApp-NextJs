@@ -106,7 +106,7 @@ export async function GET() {
 export async function PUT(req) {
     await connectDB();
     const { id } = req.nextUrl.searchParams;
-    
+
     const formData = await req.formData();
     const name = formData.get("name");
     const email = formData.get("email");
@@ -154,17 +154,22 @@ export async function PUT(req) {
 
 // DELETE: Delete an employer by ID
 export async function DELETE(req) {
-    await connectDB();
-    const { id } = req.nextUrl.searchParams;
     try {
-        const employer = await Employer.findByIdAndDelete(id);
-        if (!employer) {
-            return NextResponse.json({ success: false, message: 'Employer not found' }, { status: 404 });
+        await connectDB();
+        const body = await req.json();
+        const { id } = body;
+
+        const deletedEmployer = await Employer.findByIdAndDelete(id);
+        if (!deletedEmployer) {
+            return NextResponse.json({ message: 'Employer not found' }, { status: 404 });
         }
-        return NextResponse.json({ success: true, message: 'Employer deleted successfully' }, { status: 200 });
-    } catch (err) {
-        console.error(err);
-        return NextResponse.json({ success: false, message: 'Error deleting employer' }, { status: 500 });
+
+        return NextResponse.json({ message: 'Employer deleted successfully' }, { status: 200 });
+    } catch (error) {
+        console.error('Error deleting employer:', error);
+        return NextResponse.json({ message: 'Server error' }, { status: 500 });
     }
 }
+
+
 

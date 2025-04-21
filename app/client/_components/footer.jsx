@@ -13,7 +13,7 @@ function Footer() {
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10 px-4 sm:px-6 lg:px-8">
                     <div className="col-span-full lg:col-span-1 lg:block">
                         <a className="flex-none text-xl font-semibold" href="#" aria-label="Brand">
-                            <Image src={logo} alt='logo'/></a>
+                            <Image src={logo} alt='logo' /></a>
                         <p className="mt-3 text-xs sm:text-sm text-gray-600">
                             At Voicene Technologies LLP, we are more than just a software
                             development company; we are your strategic technology partner.
