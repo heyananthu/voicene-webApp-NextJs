@@ -16,7 +16,7 @@ function Ourteam() {
         });
     }, []);
 
-    // ⛔ Avoid rendering on server
+    //  Avoid rendering on server
     if (!hasMounted) return null;
 
     return (
@@ -27,7 +27,7 @@ function Ourteam() {
                     <Animatedcard key={index} index={index}>
                         <div className="card bg-base-100 w-80 shadow-lg border border-gray-200">
                             <figure className="px-10 pt-10">
-                            <Image
+                                <Image
                                     src={obj.photo ? `/uploads/${obj.photo}` : 'https://via.placeholder.com/150'}
                                     alt={obj.name}
                                     className="rounded-full w-40 h-40 object-cover"
