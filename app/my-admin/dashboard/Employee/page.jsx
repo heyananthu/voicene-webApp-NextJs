@@ -94,7 +94,7 @@ function Page() {
 
   return (
     <div
-      className="w-full bg-white min-h-screen mt-20 px-4"
+      className="w-full bg-white h-full mt-20 px-4"
       suppressHydrationWarning
     >
       <div className="flex justify-end mb-4">
