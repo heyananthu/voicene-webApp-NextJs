@@ -5,10 +5,11 @@ import logo from '@/public/assets/Logo_Balck.png'
 import Image from 'next/image'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useRouter } from 'next/navigation'
+import fav from '@/public/assets/fav.png'
 
 function Navbar() {
     const router = useRouter();
-    const logoutHandler =()=>{
+    const logoutHandler = () => {
         localStorage.removeItem("admin")
         router.push('/my-admin')
     }
@@ -17,8 +18,8 @@ function Navbar() {
             <div className='flex justify-between items-center'>
                 <Image src={logo} className='w-32 h-7 md:w-56 md:h-12' />
                 <div className='flex items-center gap-3'>
-                    <Avatar className="w-10 h-10 md:w-12 md:h-12">
-                        <AvatarImage src="https://github.com/shadcn.png" />
+                    <Avatar className="w-10 h-10 md:w-10 md:h-10">
+                        <AvatarImage src={fav.src} />
                         <AvatarFallback>AD</AvatarFallback>
                     </Avatar>
                     {/* <h1 className='font-semibold text-2xl'>Admin</h1> */}

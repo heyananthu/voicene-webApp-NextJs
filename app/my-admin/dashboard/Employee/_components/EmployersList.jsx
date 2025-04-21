@@ -137,6 +137,8 @@ function EmployersList() {
                                     src={emp.photo ? `/uploads/${emp.photo}` : 'https://via.placeholder.com/150'}
                                     alt={emp.name}
                                     className="rounded-full w-40 h-40 object-cover"
+                                    width={160}
+                                    height={160}
                                 />
                             </figure>
                             <div className="card-body items-center text-center">

@@ -21,7 +21,7 @@ function Ourteam() {
 
     return (
         <div className="mb-12 px-4 flex flex-col items-center gap-8 max-w-screen-xl mx-auto p-4 ">
-            <h1 className="text-center font-black text-6xl mb-10">Our Team</h1>
+            <h1 className="text-center font-black text-6xl mb-10 text-gray-600">Our Team</h1>
             <div className="flex flex-wrap justify-center gap-8">
                 {data.map((obj, index) => (
                     <Animatedcard key={index} index={index}>
@@ -31,6 +31,8 @@ function Ourteam() {
                                     src={obj.photo ? `/uploads/${obj.photo}` : 'https://via.placeholder.com/150'}
                                     alt={obj.name}
                                     className="rounded-full w-40 h-40 object-cover"
+                                    width={160}
+                                    height={160}
                                 />
                             </figure>
                             <div className="card-body items-center text-center space-y-2">
