@@ -16,7 +16,7 @@ function Login() {
   const loginHandler = (e) => {
     e.preventDefault();
 
-    if (name === "admin" && password === "1234") {     
+    if (name === "admin" && password === "1234") {
 
       localStorage.setItem("admin", "authenticated")
       console.log(localStorage.getItem("admin"))

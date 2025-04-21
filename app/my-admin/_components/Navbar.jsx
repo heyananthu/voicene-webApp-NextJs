@@ -10,7 +10,7 @@ function Navbar() {
     const router = useRouter();
     const logoutHandler =()=>{
         localStorage.removeItem("admin")
-        router.push('/my-admin')        
+        router.push('/my-admin')
     }
     return (
         <div className='w-full p-5 shadow-md rounded fixed top-0 left-0 z-10 bg-white'>
@@ -19,7 +19,7 @@ function Navbar() {
                 <div className='flex items-center gap-3'>
                     <Avatar className="w-10 h-10 md:w-12 md:h-12">
                         <AvatarImage src="https://github.com/shadcn.png" />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarFallback>AD</AvatarFallback>
                     </Avatar>
                     {/* <h1 className='font-semibold text-2xl'>Admin</h1> */}
 

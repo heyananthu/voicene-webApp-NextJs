@@ -134,7 +134,7 @@ function EmployersList() {
                     <p className='text-center'>No Details Found</p>
                     :
                     employers.map((emp) => (
-                        <div key={emp._id} className="card bg-gray-200 w-full shadow-sm hover:shadow-md transition">
+                        <div key={emp._id} className="card  w-full shadow-md ">
                             <figure className="px-10 pt-10">
                                 <img
                                     src={emp.photo ? `/uploads/${emp.photo}` : 'https://via.placeholder.com/150'}

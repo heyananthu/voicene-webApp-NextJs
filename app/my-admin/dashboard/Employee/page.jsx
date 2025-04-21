@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import EmployersList from './_components/EmployersList';
@@ -55,12 +55,39 @@ function Page() {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      if (response.status === 201) {
-        alert('Data entered successfully');
+      if (response.status === 200) {
+        toast.success('New Details Added', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
         console.log('Employer created:', response.data);
-        router.push('/my-admin/dashboard/Employee')
+        setTimeout(() => {
+          router.push('/my-admin/dashboard/Employee')
+        }, 1000)
       }
-    } catch (error) {
+      if (response.status === 409) {
+        toast.error('Details Already Exist', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+
+      }
+    }
+    catch (error) {
       console.error('Error creating employer:', error);
     }
   };
@@ -90,7 +117,7 @@ function Page() {
   };
 
   return (
-    <div className="w-full bg-white h-screen lg:h-screen mt-20">
+    <div className="w-full bg-white h-full lg:h-full mt-20">
       <div className="flex justify-end">
         <button
           className="bg-purple-600 py-2 px-5 text-white  rounded-md cursor-pointer"
