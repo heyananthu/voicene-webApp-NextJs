@@ -22,7 +22,7 @@ function Footer() {
                     </div>
                     <div className="hidden"></div>
                     <div className="ml-10">
-                        <h4 className="text-xs font-semibold text-main uppercase">
+                        <h4 className="text-xs font-semibold text-gray-600 uppercase">
                             Useful Links
                         </h4>
                         <div className="mt-3 grid space-y-3 text-sm">
@@ -44,7 +44,7 @@ function Footer() {
                         </div>
                     </div>
                     <div>
-                        <h4 className="text-xs font-semibold text-main uppercase">
+                        <h4 className="text-xs font-semibold text-black uppercase">
                             Our Services
                         </h4>
 

@@ -57,16 +57,16 @@ function Login() {
     <div className='h-screen flex justify-center items-center'>
       <div>
         <fieldset className="fieldset bg-white  shadow-md rounded-box w-[25rem] border py-12 px-4 ">
-          <h1 className='text-center font-bold text-2xl'>Admin Login</h1>
+          <h1 className='text-center font-bold text-2xl text-black'>Admin Login</h1>
 
           <label className="label">Username</label>
-          <input type="name" className="py-3 p-3 bg-gray-100 rounded-md" placeholder="username"
+          <input type="name" className="py-3 p-3 bg-gray-100 rounded-md text-black" placeholder="username"
             value={name}
             onChange={(e) => { setName(e.target.value) }}
           />
 
           <label className="label">Password</label>
-          <input type="password" className="py-3 p-3 bg-gray-100 rounded-md" placeholder="Password"
+          <input type="password" className="py-3 p-3 bg-gray-100 rounded-md text-black" placeholder="Password"
             value={password}
             onChange={(e) => { setPassword(e.target.value) }}
           />
