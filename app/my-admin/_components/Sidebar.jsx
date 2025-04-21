@@ -28,7 +28,7 @@ function Sidebar() {
     return (
         <>
             {/* Mobile Toggle Button */}
-            <div className="md:hidden absolute p-4  mt-20 ">
+            <div className="md:hidden absolute p-4  mt-20 text-black">
                 <button onClick={toggleSidebar}>
                     <HiMenuAlt3 size={30} />
                 </button>

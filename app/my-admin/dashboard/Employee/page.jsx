@@ -116,6 +116,13 @@ function Page() {
     setForm({ ...form, experiences: [...form.experiences, ''] });
   };
 
+  const [hasMounted, setHasMounted] = useState(false);
+useEffect(() => {
+  setHasMounted(true);
+}, []);
+
+if (!hasMounted) return null; // ✅ Good
+
   return (
     <div className="w-full bg-white h-full lg:h-full mt-20">
       <div className="flex justify-end">
@@ -131,7 +138,7 @@ function Page() {
 
       <dialog id="my_modal_1" className="modal">
         <div className="modal-box bg-gray-200">
-          <form onSubmit={handleSubmit} className="p-4 space-y-4">
+          <form onSubmit={handleSubmit} className="p-4 space-y-4 text-black">
             <input
               type="text"
               placeholder="Name"

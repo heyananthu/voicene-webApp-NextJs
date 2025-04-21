@@ -16,7 +16,7 @@ function Navbar() {
     return (
         <div className='w-full p-5 shadow-md rounded fixed top-0 left-0 z-10 bg-white'>
             <div className='flex justify-between items-center'>
-                <Image src={logo} className='w-32 h-7 md:w-56 md:h-12' />
+                <Image src={logo} className='w-32 h-7 md:w-56 md:h-12' alt='logo' />
                 <div className='flex items-center gap-3'>
                     <Avatar className="w-10 h-10 md:w-10 md:h-10">
                         <AvatarImage src={fav.src} />
