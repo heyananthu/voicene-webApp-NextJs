@@ -33,22 +33,22 @@ function runMiddleware(req, res, fn) {
     });
 }
 
-
-
-// PUT: Update an employer by ID
-export async function PUT(req) {
+// POST: Create a new employer
+export async function POST(req) {
     await connectDB();
-    const { id } = req.nextUrl.searchParams;
 
+    // Run Multer middleware to handle the file upload
     const formData = await req.formData();
     const name = formData.get("name");
     const email = formData.get("email");
     const contact = formData.get("contact");
     const position = formData.get("position");
 
+    // Parse array data
     const experiences = formData.getAll("experiences[]");
     const skills = formData.getAll("skills[]");
 
+    // Handle photo upload
     const photo = formData.get("photo");
     let photoUrl = "";
 
@@ -59,54 +59,45 @@ export async function PUT(req) {
         const filePath = path.join(process.cwd(), "public/uploads", fileName);
 
         await writeFile(filePath, buffer);
-        photoUrl = fileName;
+        photoUrl = fileName; // just filename; you can construct full URL when needed
     }
 
     try {
-        const employer = await Employer.findById(id);
-        if (!employer) {
-            return NextResponse.json({ success: false, message: 'Employer not found' }, { status: 404 });
-        }
-
-        employer.name = name || employer.name;
-        employer.email = email || employer.email;
-        employer.contact = contact || employer.contact;
-        employer.position = position || employer.position;
-        employer.skills = skills || employer.skills;
-        employer.experiences = experiences || employer.experiences;
-        employer.photo = photoUrl || employer.photo;
+        const employer = new Employer({
+            name,
+            email,
+            contact,
+            experiences,
+            position,
+            skills,
+            photo: photoUrl,
+        });
 
         await employer.save();
-        return NextResponse.json({ success: true, employer }, { status: 200 });
+        return NextResponse.json({ success: true, employer }, { status: 201 });
     } catch (err) {
-        console.error('Error updating employer:', err);
+        console.error("Error creating employer:", err);
+
+        if (err.name === 'ValidationError') {
+            const messages = Object.values(err.errors).map(val => val.message);
+            return NextResponse.json({ success: false, message: messages.join(', ') }, { status: 400 });
+        }
+
+        if (err.code === 11000) {
+            return NextResponse.json({ success: false, message: `Duplicate field: ${JSON.stringify(err.keyValue)}` }, { status: 409 });
+        }
+
         return NextResponse.json({ success: false, message: err.message }, { status: 500 });
     }
 }
 
-
-
-export async function DELETE(req ,  { params }) {
+// GET: Fetch all employers
+export async function GET() {
     await connectDB();
     try {
-        const { id } = params;  // Get the id from the URL
-        console.log("userid:", id);
-
-        if (id) {
-            const employer = await Employer.findByIdAndDelete(id);
-            if (!employer) {
-                return NextResponse.json({ msg: "Employer not found" }, { status: 404 });
-            }
-            return NextResponse.json({ msg: "Employer deleted" }, { status: 200 });
-        }
-
-        return NextResponse.json({ msg: "User not selected" }, { status: 404 });
-    } catch (error) {
-        console.error("Delete error:", error);
-        return NextResponse.json({ error: "Error while deleting the user details" }, { status: 500 });
+        const employers = await Employer.find();
+        return NextResponse.json({ success: true, employers }, { status: 200 });
+    } catch (err) {
+        return NextResponse.json({ success: false, message: err.message }, { status: 500 });
     }
 }
-
-
-
-

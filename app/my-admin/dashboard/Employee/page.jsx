@@ -53,14 +53,22 @@ function Page() {
     if (form.photo) formData.append('photo', form.photo);
 
     try {
-      const response = await axios.post('/api/employees/[id]', formData);
-      if (response.status === 200) {
+      const response = await axios.post('/api/employees', formData);
+      console.log("res:", response.status)
+      if (response.status === 201) {
         toast.success('New Details Added', {
-          position: 'top-center',
-          theme: 'colored',
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
           transition: Bounce,
         });
-        setTimeout(() => router.push('/my-admin/dashboard/Employee'), 500);
+
+        document.getElementById('my_modal_1').close()
       } else if (response.status === 409) {
         toast.error('Details Already Exist', {
           position: 'top-center',
@@ -94,7 +102,7 @@ function Page() {
 
   return (
     <div
-      className="w-full bg-white h-full mt-20 px-4"
+      className="w-full bg-white h-screen mt-20 px-4"
       suppressHydrationWarning
     >
       <div className="flex justify-end mb-4">
@@ -200,7 +208,7 @@ function Page() {
             />
 
             <div className="flex justify-end gap-3">
-              <button type="submit" className="btn bg-purple-600 text-white">
+              <button type="submit" className="btn bg-purple-600 text-white" onClick={handleSubmit}>
                 Submit
               </button>
               <button

@@ -5,6 +5,7 @@ import axios from "axios";
 import Animatedcard from '@/components/ui/Animationcard'
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import defaultavatar from '@/public/assets/defaultavatar.png'
 
 function Ourteam() {
     const [data, setData] = useState([]);
@@ -13,7 +14,7 @@ function Ourteam() {
 
     useEffect(() => {
         setHasMounted(true);
-        axios.get("/api/employees/[id]").then((res) => {
+        axios.get("/api/employees").then((res) => {
             setData(res.data.employers || []);
         });
     }, []);
@@ -43,7 +44,7 @@ function Ourteam() {
                         >
                             <figure className="px-6 pt-6">
                                 <Image
-                                    src={obj.photo ? `/uploads/${obj.photo}` : 'https://via.placeholder.com/150'}
+                                    src={obj.photo ? `/uploads/${obj.photo}` : {defaultavatar}}
                                     alt={obj.name}
                                     className="rounded-full w-32 h-32 object-cover"
                                     width={128}
@@ -83,7 +84,7 @@ function Ourteam() {
                             </button>
                             <div className="flex flex-col items-center space-y-4">
                                 <Image
-                                    src={selectedMember.photo ? `/uploads/${selectedMember.photo}` : 'https://via.placeholder.com/150'}
+                                    src={selectedMember.photo ? `/uploads/${selectedMember.photo}` : {defaultavatar}}
                                     alt={selectedMember.name}
                                     className="rounded-full w-32 h-32 object-cover"
                                     width={128}

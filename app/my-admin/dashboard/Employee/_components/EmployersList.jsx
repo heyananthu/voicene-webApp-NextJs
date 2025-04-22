@@ -7,6 +7,8 @@ import Image from 'next/image';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import { MdDelete } from "react-icons/md";
 import { BiEdit } from "react-icons/bi";
+import defaultavatar from '@/public/assets/defaultavatar.png'
+
 
 function EmployersList() {
     const [employers, setEmployers] = useState([]);
@@ -32,7 +34,7 @@ function EmployersList() {
     useEffect(() => {
         const fetchEmployers = async () => {
             try {
-                const res = await axios.get('/api/employees/[id]');
+                const res = await axios.get('/api/employees ');
                 if (res.status === 200) {
                     setEmployers(res.data.employers);
                 }
@@ -303,7 +305,7 @@ function EmployersList() {
 
         //     <ToastContainer />
         // </div>
-        <div className='bg-white h-screen'>
+        <div className='bg-white  '>
 
             <div className="overflow-x-auto text-black">
                 <table className="table">
@@ -328,7 +330,7 @@ function EmployersList() {
                                         <div className="avatar">
                                             <div className="mask mask-squircle h-12 w-12">
                                                 <Image
-                                                    src={item.photo ? `/uploads/${item.photo}` : 'https://via.placeholder.com/150'} alt="profile" width={160} height={160} />
+                                                    src={item.photo ? `/uploads/${item.photo}` : {defaultavatar}} alt="profile" width={160} height={160} />
                                             </div>
                                         </div>
                                         <div>
