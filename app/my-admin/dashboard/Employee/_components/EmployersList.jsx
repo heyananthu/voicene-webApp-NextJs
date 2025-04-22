@@ -13,16 +13,7 @@ import defaultavatar from '@/public/assets/defaultavatar.png'
 function EmployersList() {
     const [employers, setEmployers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [editingEmployer, setEditingEmployer] = useState(null);
-    const [form, setForm] = useState({
-        name: '',
-        email: '',
-        contact: '',
-        position: '',
-        skills: [''],
-        experiences: [''],
-        photo: null,
-    });
+
     const router = useRouter();  // Initialize the useRouter hook
     useEffect(() => {
         const adminStatus = localStorage.getItem('admin')
@@ -34,7 +25,7 @@ function EmployersList() {
     useEffect(() => {
         const fetchEmployers = async () => {
             try {
-                const res = await axios.get('/api/employees ');
+                const res = await axios.get('/api/employees');
                 if (res.status === 200) {
                     setEmployers(res.data.employers);
                 }
@@ -70,73 +61,9 @@ function EmployersList() {
     };
 
 
-    const handleUpdate = (employer) => {
-        setEditingEmployer(employer);
-        setForm({
-            name: employer.name,
-            email: employer.email,
-            contact: employer.contact,
-            position: employer.position,
-            skills: employer.skills || [''],
-            experiences: employer.experiences || [''],
-            photo: null,
-        });
-    };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('name', form.name);
-        formData.append('email', form.email);
-        formData.append('contact', form.contact);
-        formData.append('position', form.position);
-        form.experiences.forEach((exp) => formData.append('experiences[]', exp));
-        form.skills.forEach((skill) => formData.append('skills[]', skill));
 
-        if (form.photo) {
-            formData.append('photo', form.photo);
-        }
-
-        try {
-            const response = editingEmployer
-                ? await axios.put(`/api/employees/${editingEmployer._id}`, formData)
-                : await axios.post('/api/employees', formData);
-
-            if (response.status === 201 || response.status === 200) {
-                alert('Employer data saved successfully!');
-                router.push('/'); // Navigate to the list after saving
-                router.refresh(); // Refresh the page to show the updated data
-            }
-        } catch (error) {
-            console.error('Error saving employer data:', error);
-            alert('Error saving employer data!');
-        }
-    };
-
-    const handleFileChange = (e) => {
-        setForm({ ...form, photo: e.target.files[0] });
-    };
-
-    const handleSkillsChange = (e, index) => {
-        const newSkills = [...form.skills];
-        newSkills[index] = e.target.value;
-        setForm({ ...form, skills: newSkills });
-    };
-
-    const handleExperiencesChange = (e, index) => {
-        const newExperiences = [...form.experiences];
-        newExperiences[index] = e.target.value;
-        setForm({ ...form, experiences: newExperiences });
-    };
-
-    const addExperienceField = () => {
-        setForm({ ...form, experiences: [...form.experiences, ''] });
-    };
-
-    const addSkillField = () => {
-        setForm({ ...form, skills: [...form.skills, ''] });
-    };
 
     if (loading) return <p className="p-4 text-center">Loading...</p>;
 
@@ -313,10 +240,17 @@ function EmployersList() {
                     <thead className='text-black'>
                         <tr>
                             <th>Name</th>
-                            <th>Email</th>
                             <th>Contact</th>
                             <th>Total Experience</th>
                             <th>Skills</th>
+                            <th>Education </th>
+                            <th>Soft Skills</th>
+                            <th>Achievements</th>
+                            <th>Projects</th>
+                            <th>Nationality</th>
+                            <th>Gender</th>
+                            <th>Date of Birth</th>
+                            <th>Language Known</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -330,7 +264,8 @@ function EmployersList() {
                                         <div className="avatar">
                                             <div className="mask mask-squircle h-12 w-12">
                                                 <Image
-                                                    src={item.photo ? `/uploads/${item.photo}` : {defaultavatar}} alt="profile" width={160} height={160} />
+                                                    src={item.photo ? `/uploads/${item.photo}` :  defaultavatar } alt="profile" width={160} height={160} />
+
                                             </div>
                                         </div>
                                         <div>
@@ -341,12 +276,20 @@ function EmployersList() {
                                 </td>
                                 <td>
                                     {item.email}
-                                    {/* <br />
-                                <span className="badge badge-ghost badge-sm">Desktop Support Technician</span> */}
+                                    <br />
+                                    <span className="badge badge-ghost badge-sm">{item.contact}</span>
                                 </td>
-                                <td>{item.contact}</td>
+                                
                                 <td>{item.experiences.join(', ')}</td>
                                 <td>{item.skills.join(', ')}</td>
+                                <td>{item.education.join(', ')}</td>
+                                <td>{item.softskills.join(', ')}</td>
+                                <td>{item.achievements.join(', ')}</td>
+                                <td>{item.projects.join(', ')}</td>
+                                <td>{item.nationality}</td>
+                                <td>{item.gender}</td>
+                                <td>{new Date(item.dob).toLocaleDateString()}</td>
+                                <td>{item.language}</td>
                                 <th>
                                     <button className="btn btn-ghost btn-xs" onClick={() => handleDelete(item._id)}><MdDelete size={18} className='text-red-600' /></button>
                                 </th>

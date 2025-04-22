@@ -16,13 +16,20 @@ function Page() {
     experiences: [''],
     position: '',
     skills: [''],
+    projects: [''],
+    softskills: [''],
+    education: [''],
+    achievements: [''],
+    gender: '',
+    nationality: '',
+    dob: '',
+    language: '',
     photo: null,
   });
 
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // Ensure this only runs on client
     setIsClient(true);
     if (typeof window !== 'undefined') {
       const adminStatus = localStorage.getItem('admin');
@@ -40,35 +47,84 @@ function Page() {
 
   if (!isClient) return null;
 
+  // Update individual item in array fields
+  const updateFieldArray = (type, value, index) => {
+    const updated = [...form[type]];
+    updated[index] = value;
+    setForm({ ...form, [type]: updated });
+  };
+
+  // Add new empty input to array fields
+  const addField = (type) => {
+    setForm({ ...form, [type]: [...form[type], ''] });
+  };
+
+  // Handle file input change
+  const handleFileChange = (e) => {
+    setForm({ ...form, photo: e.target.files[0] });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Filter out empty strings from array fields before appending
+    const filteredArrays = {};
+    ['skills', 'experiences', 'projects', 'softskills', 'education', 'achievements'].forEach((field) => {
+      filteredArrays[field] = form[field].map(item => item.trim()).filter(Boolean);
+    });
 
     const formData = new FormData();
     formData.append('name', form.name);
     formData.append('email', form.email);
     formData.append('contact', form.contact);
     formData.append('position', form.position);
-    form.skills.forEach((skill) => formData.append('skills[]', skill));
-    form.experiences.forEach((exp) => formData.append('experiences[]', exp));
+
+    // Append filtered arrays properly (without [] in key)
+    Object.entries(filteredArrays).forEach(([field, arr]) => {
+      arr.forEach(item => formData.append(field, item));
+    });
+
+    formData.append('gender', form.gender);
+    formData.append('nationality', form.nationality);
+    formData.append('dob', form.dob);
+    formData.append('language', form.language);
+
     if (form.photo) formData.append('photo', form.photo);
 
     try {
-      const response = await axios.post('/api/employees', formData);
-      console.log("res:", response.status)
+      const response = await axios.post('/api/employees', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
       if (response.status === 201) {
         toast.success('New Details Added', {
-          position: "top-center",
+          position: 'top-center',
           autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
+          theme: 'colored',
           transition: Bounce,
         });
+        document.getElementById('my_modal_1').close();
 
-        document.getElementById('my_modal_1').close()
+        // Optionally reset form here if needed
+        setForm({
+          name: '',
+          email: '',
+          contact: '',
+          experiences: [''],
+          position: '',
+          skills: [''],
+          projects: [''],
+          softskills: [''],
+          education: [''],
+          achievements: [''],
+          gender: '',
+          nationality: '',
+          dob: '',
+          language: '',
+          photo: null,
+        });
       } else if (response.status === 409) {
         toast.error('Details Already Exist', {
           position: 'top-center',
@@ -86,25 +142,9 @@ function Page() {
     }
   };
 
-  const updateFieldArray = (type, value, index) => {
-    const updated = [...form[type]];
-    updated[index] = value;
-    setForm({ ...form, [type]: updated });
-  };
-
-  const addField = (type) => {
-    setForm({ ...form, [type]: [...form[type], ''] });
-  };
-
-  const handleFileChange = (e) => {
-    setForm({ ...form, photo: e.target.files[0] });
-  };
-
   return (
-    <div
-      className="w-full bg-white h-screen mt-20 px-4"
-      suppressHydrationWarning
-    >
+    <div className="w-full bg-white h-screen mt-20 px-4" suppressHydrationWarning>
+      <ToastContainer />
       <div className="flex justify-end mb-4">
         <button
           className="bg-purple-600 py-2 px-5 text-white rounded-md hover:scale-105 transition"
@@ -152,78 +192,79 @@ function Page() {
               required
             />
 
-            {/* Experience Fields */}
-            <div>
-              <label className="font-semibold">Experience</label>
-              {form.experiences.map((exp, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  placeholder="Experience"
-                  className="input input-bordered w-full mt-1 bg-slate-50"
-                  value={exp}
-                  onChange={(e) =>
-                    updateFieldArray('experiences', e.target.value, index)
-                  }
-                />
-              ))}
-              <button
-                type="button"
-                className="btn btn-sm mt-2 bg-purple-600 text-white"
-                onClick={() => addField('experiences')}
-              >
-                + Add Experience
-              </button>
-            </div>
+            {/* Dynamic Fields */}
+            {['experiences', 'skills', 'education', 'softskills', 'achievements', 'projects'].map((field) => (
+              <div key={field}>
+                <label className="font-semibold capitalize">{field}</label>
+                {form[field].map((item, index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    placeholder={field.slice(0, -1)}
+                    className="input input-bordered w-full mt-1 bg-slate-50"
+                    value={item}
+                    onChange={(e) => updateFieldArray(field, e.target.value, index)}
+                  />
+                ))}
+                <button
+                  type="button"
+                  className="btn btn-sm mt-2 bg-purple-600 text-white"
+                  onClick={() => addField(field)}
+                >
+                  + Add
+                </button>
+              </div>
+            ))}
 
-            {/* Skills Fields */}
-            <div>
-              <label className="font-semibold">Skills</label>
-              {form.skills.map((skill, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  placeholder="Skill"
-                  className="input input-bordered w-full mt-1 bg-slate-50"
-                  value={skill}
-                  onChange={(e) =>
-                    updateFieldArray('skills', e.target.value, index)
-                  }
-                />
-              ))}
-              <button
-                type="button"
-                className="btn btn-sm mt-2 bg-purple-600 text-white"
-                onClick={() => addField('skills')}
-              >
-                + Add Skill
-              </button>
-            </div>
+            <input
+              type="text"
+              placeholder="Nationality"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.nationality}
+              onChange={(e) => setForm({ ...form, nationality: e.target.value })}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Gender"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.gender}
+              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+              required
+            />
+            <input
+              type="date"
+              placeholder="Date of Birth"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.dob}
+              onChange={(e) => setForm({ ...form, dob: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Language"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.language}
+              onChange={(e) => setForm({ ...form, language: e.target.value })}
+            />
 
             <input
               type="file"
-              onChange={handleFileChange}
-              className="file-input file-input-bordered w-full bg-slate-50"
               accept="image/*"
+              className="file-input file-input-bordered w-full bg-slate-50"
+              onChange={handleFileChange}
             />
 
-            <div className="flex justify-end gap-3">
-              <button type="submit" className="btn bg-purple-600 text-white" onClick={handleSubmit}>
+            <div className="modal-action">
+              <button type="submit" className="btn bg-purple-600 text-white">
                 Submit
               </button>
-              <button
-                type="button"
-                className="btn bg-slate-600 text-white"
-                onClick={() => document.getElementById('my_modal_1').close()}
-              >
+              <button type="button" className="btn" onClick={() => document.getElementById('my_modal_1').close()}>
                 Close
               </button>
             </div>
           </form>
         </div>
       </dialog>
-
-      <ToastContainer />
     </div>
   );
 }
