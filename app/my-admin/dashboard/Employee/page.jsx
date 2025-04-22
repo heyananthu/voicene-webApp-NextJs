@@ -53,14 +53,14 @@ function Page() {
     if (form.photo) formData.append('photo', form.photo);
 
     try {
-      const response = await axios.post('/api/employees', formData);
+      const response = await axios.post('/api/employees/[id]', formData);
       if (response.status === 200) {
         toast.success('New Details Added', {
           position: 'top-center',
           theme: 'colored',
           transition: Bounce,
         });
-        setTimeout(() => router.push('/my-admin/dashboard/Employee'), 1000);
+        setTimeout(() => router.push('/my-admin/dashboard/Employee'), 500);
       } else if (response.status === 409) {
         toast.error('Details Already Exist', {
           position: 'top-center',
@@ -114,7 +114,7 @@ function Page() {
             <input
               type="text"
               placeholder="Name"
-              className="input input-bordered w-full"
+              className="input input-bordered w-full bg-slate-50"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               required
@@ -122,7 +122,7 @@ function Page() {
             <input
               type="email"
               placeholder="Email"
-              className="input input-bordered w-full"
+              className="input input-bordered w-full bg-slate-50"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
@@ -130,7 +130,7 @@ function Page() {
             <input
               type="text"
               placeholder="Contact"
-              className="input input-bordered w-full"
+              className="input input-bordered w-full bg-slate-50"
               value={form.contact}
               onChange={(e) => setForm({ ...form, contact: e.target.value })}
               required
@@ -138,7 +138,7 @@ function Page() {
             <input
               type="text"
               placeholder="Position"
-              className="input input-bordered w-full"
+              className="input input-bordered w-full bg-slate-50"
               value={form.position}
               onChange={(e) => setForm({ ...form, position: e.target.value })}
               required
@@ -152,7 +152,7 @@ function Page() {
                   key={index}
                   type="text"
                   placeholder="Experience"
-                  className="input input-bordered w-full mt-1"
+                  className="input input-bordered w-full mt-1 bg-slate-50"
                   value={exp}
                   onChange={(e) =>
                     updateFieldArray('experiences', e.target.value, index)
@@ -176,7 +176,7 @@ function Page() {
                   key={index}
                   type="text"
                   placeholder="Skill"
-                  className="input input-bordered w-full mt-1"
+                  className="input input-bordered w-full mt-1 bg-slate-50"
                   value={skill}
                   onChange={(e) =>
                     updateFieldArray('skills', e.target.value, index)
@@ -195,7 +195,7 @@ function Page() {
             <input
               type="file"
               onChange={handleFileChange}
-              className="file-input file-input-bordered w-full"
+              className="file-input file-input-bordered w-full bg-slate-50"
               accept="image/*"
             />
 
@@ -205,7 +205,7 @@ function Page() {
               </button>
               <button
                 type="button"
-                className="btn"
+                className="btn bg-slate-600 text-white"
                 onClick={() => document.getElementById('my_modal_1').close()}
               >
                 Close

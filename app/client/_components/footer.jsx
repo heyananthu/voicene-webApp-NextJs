@@ -6,6 +6,8 @@ import usa from '@/public/assets/usa-flag.svg';
 import india from '@/public/assets/india-flag.svg'
 import Image from 'next/image'
 function Footer() {
+    const [condition, setCondition] = useState(true);
+
     return (
         <div className='shadow-md'>
             <footer className="mt-auto w-full max-w-[85rem] pt-10 mx-auto bg-white border-t">
@@ -22,7 +24,7 @@ function Footer() {
                     </div>
                     <div className="hidden"></div>
                     <div className="ml-10">
-                        <h4 className="text-xs font-semibold text-gray-600 uppercase">
+                        <h4 className={`text-xs font-semibold ${condition ? 'text-main' : 'text-black'} uppercase`}>
                             Useful Links
                         </h4>
                         <div className="mt-3 grid space-y-3 text-sm">
@@ -44,7 +46,7 @@ function Footer() {
                         </div>
                     </div>
                     <div>
-                        <h4 className="text-xs font-semibold text-black uppercase">
+                        <h4 className="text-xs font-semibold !text-black uppercase">
                             Our Services
                         </h4>
 
@@ -73,7 +75,7 @@ function Footer() {
                         <div className="grid">
                             <div className="flex">
                                 <Image src={india} alt="india" className="mr-3 w-4" />
-                                <h4 className="text-xs font-semibold text-main uppercase">
+                                <h4 className="text-xs font-semibold text-black uppercase">
                                     INDIA
                                 </h4>
                             </div>

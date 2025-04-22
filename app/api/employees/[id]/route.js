@@ -4,6 +4,7 @@ import multer from "multer";
 import path from "path";
 import { NextResponse } from "next/server";
 import { writeFile } from 'fs/promises';
+import { MdSportsGolf } from "react-icons/md";
 
 // Multer setup for file upload
 const storage = multer.diskStorage({
@@ -152,24 +153,28 @@ export async function PUT(req) {
 }
 
 
-// DELETE: Delete an employer by ID
-export async function DELETE(req) {
-    try {
-        await connectDB();
-        const body = await req.json();
-        const { id } = body;
 
-        const deletedEmployer = await Employer.findByIdAndDelete(id);
-        if (!deletedEmployer) {
-            return NextResponse.json({ message: 'Employer not found' }, { status: 404 });
+export async function DELETE(req ,  { params }) {
+    await connectDB();
+    try {
+        const { id } = params;  // Get the id from the URL
+        console.log("userid:", id);
+
+        if (id) {
+            const employer = await Employer.findByIdAndDelete(id);
+            if (!employer) {
+                return NextResponse.json({ msg: "Employer not found" }, { status: 404 });
+            }
+            return NextResponse.json({ msg: "Employer deleted" }, { status: 200 });
         }
 
-        return NextResponse.json({ message: 'Employer deleted successfully' }, { status: 200 });
+        return NextResponse.json({ msg: "User not selected" }, { status: 404 });
     } catch (error) {
-        console.error('Error deleting employer:', error);
-        return NextResponse.json({ message: 'Server error' }, { status: 500 });
+        console.error("Delete error:", error);
+        return NextResponse.json({ error: "Error while deleting the user details" }, { status: 500 });
     }
 }
+
 
 
 

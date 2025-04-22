@@ -13,7 +13,7 @@ function Ourteam() {
 
     useEffect(() => {
         setHasMounted(true);
-        axios.get("/api/employees").then((res) => {
+        axios.get("/api/employees/[id]").then((res) => {
             setData(res.data.employers || []);
         });
     }, []);
@@ -39,7 +39,7 @@ function Ourteam() {
                     <Animatedcard key={index} index={index}>
                         <div
                             onClick={() => handleCardClick(obj)}
-                            className="cursor-pointer card bg-white w-80 h-80 shadow-md shadow-slate-300 border  hover:scale-105 transition-transform duration-200"
+                            className="cursor-pointer card bg-white w-80 h-80 shadow-md shadow-slate-300   hover:scale-105 transition-transform duration-200"
                         >
                             <figure className="px-6 pt-6">
                                 <Image
