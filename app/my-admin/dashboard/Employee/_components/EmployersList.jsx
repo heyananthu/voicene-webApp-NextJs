@@ -244,7 +244,7 @@ function EmployersList() {
                             <th>Gender</th>
                             <th>Date of Birth</th>
                             <th>Nationality </th>
-                            <th>Language Known</th>
+                            <th>Language Proficiency</th>
                             <th>Education</th>
                             <th>Skills</th>
                             <th>Soft Skills</th>

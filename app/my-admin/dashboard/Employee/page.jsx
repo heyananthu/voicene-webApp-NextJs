@@ -222,7 +222,7 @@ function Page() {
 
             <input
               type="text"
-              placeholder="Language"
+              placeholder="Language Proficiency"
               className="input input-bordered w-full bg-slate-50"
               value={form.language}
               onChange={(e) => setForm({ ...form, language: e.target.value })}
@@ -237,7 +237,7 @@ function Page() {
                   <input
                     key={index}
                     type="text"
-                    placeholder={field.slice(0, -1)}
+                    placeholder={field}
                     className="input input-bordered w-full mt-1 bg-slate-50"
                     value={item}
                     onChange={(e) => updateFieldArray(field, e.target.value, index)}
