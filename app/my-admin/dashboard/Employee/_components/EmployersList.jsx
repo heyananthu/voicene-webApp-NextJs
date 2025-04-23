@@ -241,16 +241,17 @@ function EmployersList() {
                         <tr>
                             <th>Name</th>
                             <th>Contact</th>
-                            <th>Total Experience</th>
-                            <th>Skills</th>
-                            <th>Education </th>
-                            <th>Soft Skills</th>
-                            <th>Achievements</th>
-                            <th>Projects</th>
-                            <th>Nationality</th>
                             <th>Gender</th>
                             <th>Date of Birth</th>
+                            <th>Nationality </th>
                             <th>Language Known</th>
+                            <th>Education</th>
+                            <th>Skills</th>
+                            <th>Soft Skills</th>
+                            <th>Experience</th>
+                            <th>Projects</th>
+                            <th>Achievements</th>
+
                             <th></th>
                         </tr>
                     </thead>
@@ -264,7 +265,7 @@ function EmployersList() {
                                         <div className="avatar">
                                             <div className="mask mask-squircle h-12 w-12">
                                                 <Image
-                                                    src={item.photo ? `/uploads/${item.photo}` :  defaultavatar } alt="profile" width={160} height={160} />
+                                                    src={item.photo ? `/uploads/${item.photo}` : defaultavatar} alt="profile" width={160} height={160} />
 
                                             </div>
                                         </div>
@@ -279,19 +280,19 @@ function EmployersList() {
                                     <br />
                                     <span className="badge badge-ghost badge-sm">{item.contact}</span>
                                 </td>
-                                
-                                <td>{item.experiences.join(', ')}</td>
-                                <td>{item.skills.join(', ')}</td>
-                                <td>{item.education.join(', ')}</td>
-                                <td>{item.softskills.join(', ')}</td>
-                                <td>{item.achievements.join(', ')}</td>
-                                <td>{item.projects.join(', ')}</td>
-                                <td>{item.nationality}</td>
+
                                 <td>{item.gender}</td>
                                 <td>{new Date(item.dob).toLocaleDateString()}</td>
+                                <td>{item.nationality}</td>
                                 <td>{item.language}</td>
+                                <td>{item.education.join(', ')}</td>
+                                <td>{item.skills.join(', ')}</td>
+                                <td>{item.softskills.join(', ')}</td>
+                                <td>{item.experiences.join(', ')}</td>
+                                <td>{item.projects.join(', ')}</td>
+                                <td>{item.achievements.join(', ')}</td>
                                 <th>
-                                    <button className="btn btn-ghost btn-xs" onClick={() => handleDelete(item._id)}><MdDelete size={18} className='text-red-600' /></button>
+                                    <button className="btn btn-ghost btn-xs" onClick={() => handleDelete(item._id)}><MdDelete size={20} className='text-red-600' /></button>
                                 </th>
                                 {/* <th>
                                     <button className="btn btn-ghost btn-xs"><BiEdit size={18} className='text-green-600'/></button>

@@ -168,6 +168,15 @@ function Page() {
               required
             />
             <input
+              type="text"
+              placeholder="Position"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.position}
+              onChange={(e) => setForm({ ...form, position: e.target.value })}
+              required
+            />
+
+            <input
               type="email"
               placeholder="Email"
               className="input input-bordered w-full bg-slate-50"
@@ -177,23 +186,51 @@ function Page() {
             />
             <input
               type="text"
-              placeholder="Contact"
+              placeholder="Contact Number"
               className="input input-bordered w-full bg-slate-50"
               value={form.contact}
               onChange={(e) => setForm({ ...form, contact: e.target.value })}
               required
             />
+
             <input
               type="text"
-              placeholder="Position"
+              placeholder="Gender"
               className="input input-bordered w-full bg-slate-50"
-              value={form.position}
-              onChange={(e) => setForm({ ...form, position: e.target.value })}
+              value={form.gender}
+              onChange={(e) => setForm({ ...form, gender: e.target.value })}
               required
             />
 
+            <input
+              type="date"
+              placeholder="Date of Birth"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.dob}
+              onChange={(e) => setForm({ ...form, dob: e.target.value })}
+            />
+
+            <input
+              type="text"
+              placeholder="Nationality"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.nationality}
+              onChange={(e) => setForm({ ...form, nationality: e.target.value })}
+              required
+            />
+
+
+            <input
+              type="text"
+              placeholder="Language"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.language}
+              onChange={(e) => setForm({ ...form, language: e.target.value })}
+            />
+            
+
             {/* Dynamic Fields */}
-            {['experiences', 'skills', 'education', 'softskills', 'achievements', 'projects'].map((field) => (
+            {['education', 'skills', 'softskills', 'experiences', 'projects', 'achievements'].map((field) => (
               <div key={field}>
                 <label className="font-semibold capitalize">{field}</label>
                 {form[field].map((item, index) => (
@@ -216,36 +253,6 @@ function Page() {
               </div>
             ))}
 
-            <input
-              type="text"
-              placeholder="Nationality"
-              className="input input-bordered w-full bg-slate-50"
-              value={form.nationality}
-              onChange={(e) => setForm({ ...form, nationality: e.target.value })}
-              required
-            />
-            <input
-              type="text"
-              placeholder="Gender"
-              className="input input-bordered w-full bg-slate-50"
-              value={form.gender}
-              onChange={(e) => setForm({ ...form, gender: e.target.value })}
-              required
-            />
-            <input
-              type="date"
-              placeholder="Date of Birth"
-              className="input input-bordered w-full bg-slate-50"
-              value={form.dob}
-              onChange={(e) => setForm({ ...form, dob: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Language"
-              className="input input-bordered w-full bg-slate-50"
-              value={form.language}
-              onChange={(e) => setForm({ ...form, language: e.target.value })}
-            />
 
             <input
               type="file"

@@ -100,8 +100,8 @@ function Ourteam() {
                                     <div className="text-left w-full text-sm text-gray-700">
                                         <h3 className="font-semibold mb-2 border-b pb-1">Personal Info</h3>
                                         <ul className="space-y-1">
-                                            <li><strong>DOB:</strong> {new Date(selectedMember.dob).toLocaleDateString()}</li>
                                             <li><strong>Gender:</strong> {selectedMember.gender}</li>
+                                            <li><strong>DOB:</strong> {new Date(selectedMember.dob).toLocaleDateString()}</li>
                                             <li><strong>Nationality:</strong> {selectedMember.nationality}</li>
                                             <li><strong>Languages:</strong> {selectedMember.language}</li>
                                         </ul>
@@ -110,12 +110,12 @@ function Ourteam() {
 
                                 {/* Right Side - Resume Content */}
                                 <div className="md:col-span-2 space-y-6 text-sm text-gray-800">
-                                    <ResumeSection title="Experience" items={selectedMember.experiences} />
                                     <ResumeSection title="Education" items={selectedMember.education} />
+                                    <ResumeBadgeSectionSkills title="Skills" items={selectedMember.skills} />
+                                    <ResumeBadgeSection title="Soft Skills" items={selectedMember.softskills} />
+                                    <ResumeSection title="Experience" items={selectedMember.experiences} />
                                     <ResumeSection title="Projects" items={selectedMember.projects} />
                                     <ResumeSection title="Achievements" items={selectedMember.achievements} />
-                                    <ResumeBadgeSection title="Skills" items={selectedMember.skills} />
-                                    <ResumeBadgeSection title="Soft Skills" items={selectedMember.softskills} />
                                 </div>
                             </div>
                         </motion.div>
@@ -151,6 +151,25 @@ const ResumeBadgeSection = ({ title, items }) => {
                     <span
                         key={index}
                         className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium"
+                    >
+                        {item}
+                    </span>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+const ResumeBadgeSectionSkills = ({ title, items }) => {
+    if (!items?.length) return null;
+    return (
+        <div>
+            <h3 className="text-lg font-semibold border-b pb-1 mb-2">{title}</h3>
+            <div className="flex flex-wrap gap-2">
+                {items.map((item, index) => (
+                    <span
+                        key={index}
+                        className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium"
                     >
                         {item}
                     </span>
