@@ -23,21 +23,21 @@ function FooterSection() {
                     </div>
                     <div className="hidden"></div>
                     <div className="ml-10">
-                        <h4 className="text-xs font-semibold text-main uppercase">
+                        <h4 className="text-xs font-semibold text-main uppercase text-black">
                             Useful Links
                         </h4>
                         <div className="mt-3 grid space-y-3 text-sm">
                             <p>
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./index.html">Home</a>
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/">Home</a>
                             </p>
                             <p>
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./about.html">About us</a>
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/about.html">About us</a>
                             </p>
                             <p>
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./contactus.html">Contact Us</a>
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/contactus.html">Contact Us</a>
                             </p>
                             <p>
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./openings.html">Careers</a>
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/openings.html">Careers</a>
                             </p>
                             <p>
                                 <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="#">Sitemap</a>
@@ -45,28 +45,28 @@ function FooterSection() {
                         </div>
                     </div>
                     <div>
-                        <h4 className="text-xs font-semibold text-main uppercase">
+                        <h4 className="text-xs font-semibold text-main uppercase text-black">
                             Our Services
                         </h4>
 
                         <div className="mt-3 grid space-y-3 text-sm">
                             <p>
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./Itservices.html">IT Services</a>
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/Itservices.html">IT Services</a>
                             </p>
                             <p>
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./itservices/webdevelopmentservice.html">
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/itservices/webdevelopmentservice.html">
                                     Web development
                                 </a>
                             </p>
                             <p>
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./itservices/mobileappdevelopmentservice.html">App Development
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/itservices/mobileappdevelopmentservice.html">App Development
                                 </a>
                             </p>
                             <p>
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./EnterpriseResourcePlanning.html">ERP</a>
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/EnterpriseResourcePlanning.html">ERP</a>
                             </p>
                             <p>
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./dataserv.html">Data Services</a>
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/dataserv.html">Data Services</a>
                             </p>
                         </div>
                     </div>
@@ -74,7 +74,7 @@ function FooterSection() {
                         <div className="grid">
                             <div className="flex">
                                 <Image src={india} alt="india" className="mr-3 w-4" />
-                                <h4 className="text-xs font-semibold text-main uppercase">
+                                <h4 className="text-xs font-semibold text-main uppercase text-black">
                                     INDIA
                                 </h4>
                             </div>
@@ -111,7 +111,7 @@ function FooterSection() {
                         <div className="grid">
                             <div className="flex">
                                 <Image src={usa} alt="USA Flag" className="mr-3 w-4" />
-                                <h4 className="text-xs font-semibold text-main uppercase">
+                                <h4 className="text-xs font-semibold text-main uppercase text-black">
                                     USA
                                 </h4>
                             </div>
@@ -147,7 +147,7 @@ function FooterSection() {
                         <div className="grid">
                             <div className="flex">
                                 <Image src={netherlands} alt="NETHERLANDS Flag" className="mr-3 w-4" />
-                                <h4 className="text-xs font-semibold text-main uppercase">
+                                <h4 className="text-xs font-semibold text-main uppercase text-black">
                                     NETHERLANDS *
                                 </h4>
                             </div>
@@ -183,7 +183,7 @@ function FooterSection() {
                         <div className="grid">
                             <div className="flex">
                                 <Image src={australia} alt="AUSTRALIA Flag" className="mr-3 w-4" />
-                                <h4 className="text-xs font-semibold text-main uppercase">
+                                <h4 className="text-xs font-semibold text-main uppercase text-black">
                                     AUSTRALIA *
                                 </h4>
                             </div>
@@ -287,8 +287,8 @@ function FooterSection() {
                             </div>
                             {/* <!-- End Language Dropdown --> */}
                             <div className="space-x-4 text-sm ms-4">
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./terms.html">Terms of service</a>
-                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="./privacypolicy.html">
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/terms.html">Terms of service</a>
+                                <a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800" href="https://www.voicene.com/privacypolicy.html">
                                     Privacy policy</a>
                             </div>
                         </div>

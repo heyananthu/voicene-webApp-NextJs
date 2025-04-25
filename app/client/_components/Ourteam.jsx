@@ -40,7 +40,7 @@ function Ourteam() {
                     <Animatedcard key={index} index={index}>
                         <div
                             onClick={() => handleCardClick(obj)}
-                            className="cursor-pointer card bg-white w-80 h-80 shadow-md shadow-slate-300 hover:scale-105 transition-transform duration-200"
+                            className="cursor-pointer card bg-white w-80 h-80 shadow-md shadow-slate-300 hover:scale-110 transition-transform duration-500"
                         >
                             <figure className="px-6 pt-6">
                                 <Image
@@ -85,19 +85,20 @@ function Ourteam() {
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {/* Left Side - Profile Summary */}
-                                <div className="md:col-span-1 flex flex-col items-center gap-4">
+                                <div className="md:col-span-1 flex flex-col items-center justify-center gap-4">
                                     <Image
                                         src={selectedMember.photo ? `/uploads/${selectedMember.photo}` : defaultavatar}
                                         alt={selectedMember.name}
-                                        className="rounded-full w-32 h-32 object-cover"
+                                        className="rounded-full w-32 h-32 md:w-44 md:h-44 object-cover"
                                         width={128}
                                         height={128}
                                     />
                                     <div className="text-center">
-                                        <h2 className="text-xl font-bold text-gray-800">{selectedMember.name}</h2>
+
+                                        <h2 className="text-2xl font-bold text-gray-800">{selectedMember.name}</h2>
                                         <p className="text-sm text-gray-500">{selectedMember.position}</p>
                                     </div>
-                                    <div className="text-left w-full text-sm text-gray-700">
+                                    {/* <div className="text-left w-full text-sm text-gray-700">
                                         <h3 className="font-semibold mb-2 border-b pb-1">Personal Info</h3>
                                         <ul className="space-y-1">
                                             <li><strong>Gender:</strong> {selectedMember.gender}</li>
@@ -105,7 +106,7 @@ function Ourteam() {
                                             <li><strong>Nationality:</strong> {selectedMember.nationality}</li>
                                             <li><strong>Languages:</strong> {selectedMember.language}</li>
                                         </ul>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 {/* Right Side - Resume Content */}

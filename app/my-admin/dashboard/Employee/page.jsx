@@ -227,7 +227,7 @@ function Page() {
               value={form.language}
               onChange={(e) => setForm({ ...form, language: e.target.value })}
             />
-            
+
 
             {/* Dynamic Fields */}
             {['education', 'skills', 'softskills', 'experiences', 'projects', 'achievements'].map((field) => (
