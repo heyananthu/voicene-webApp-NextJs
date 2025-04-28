@@ -8,7 +8,10 @@ import { ToastContainer, toast, Bounce } from 'react-toastify';
 import { MdDelete } from "react-icons/md";
 import { BiEdit } from "react-icons/bi";
 import defaultavatar from '@/public/assets/defaultavatar.png'
+import dynamic from "next/dynamic";
 
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
+import Loading from '@/public/assets/Loading.json'
 
 function EmployersList() {
     const [employers, setEmployers] = useState([]);
@@ -59,11 +62,6 @@ function EmployersList() {
             console.error('Error deleting employer:', error.response?.data?.message || error.message);
         }
     };
-
-
-
-
-
 
     if (loading) return <p className="p-4 text-center">Loading...</p>;
 
@@ -232,7 +230,7 @@ function EmployersList() {
 
         //     <ToastContainer />
         // </div>
-        <div className='bg-white  '>
+        <div className='bg-white h-full '>
 
             <div className="overflow-x-auto text-black">
                 <table className="table">
