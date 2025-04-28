@@ -6,7 +6,9 @@ import Animatedcard from '@/components/ui/Animationcard'
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import defaultavatar from '@/public/assets/defaultavatar.png'
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
+
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import Loading from '@/public/assets/Loading.json'
 function Ourteam() {
     const [data, setData] = useState([]);
