@@ -2,7 +2,6 @@
 @plugin "daisyui";
 @import "tw-animate-css";
 
-
 @custom-variant dark (&:is(.dark *));
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
@@ -11,16 +10,11 @@
   --background: #ffffff;
 }
 
+/* Add this 👇 to connect font-poppins */
+.font-poppins {
+  font-family: var(--font-poppins), sans-serif;
+}
+
 /* * {
   color: black !important; 
 } */
-
-  
-
-
-
-
-
-
-
-

@@ -42,7 +42,7 @@ function Ourteam() {
     return (
         <div className="mb-12 px-4 flex flex-col items-center gap-8 max-w-screen-xl mx-auto p-4">
             <Animatedcard>
-                <h1 className="text-center font-normal text-6xl mb-10 text-gray-600">Our Team</h1>
+                <h1 className="text-center font-semibold  text-6xl mb-10 text-gray-600">Our Team</h1>
             </Animatedcard>
 
             <div className="flex flex-wrap justify-center gap-8 h-auto">

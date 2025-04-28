@@ -2,7 +2,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Poppins } from 'next/font/google';
 
-
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -29,12 +28,9 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-
   return (
-    <html lang="en" className={poppins.variable}>
-      <body
-        className="font-poppins bg-white "
-      >
+    <html lang="en" className={`${poppins.variable} font-poppins`}>
+      <body className=" bg-white">
         {children}
       </body>
     </html>
