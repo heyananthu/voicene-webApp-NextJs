@@ -6,18 +6,26 @@ import Animatedcard from '@/components/ui/Animationcard'
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import defaultavatar from '@/public/assets/defaultavatar.png'
-
+import Lottie from "lottie-react";
+import Loading from '@/public/assets/Loading.json'
 function Ourteam() {
     const [data, setData] = useState([]);
     const [hasMounted, setHasMounted] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null);
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
+        setLoading(true);
         setHasMounted(true);
-        axios.get("/api/employees").then((res) => {
-            setData(res.data.employers || []);
-        });
+        axios.get("/api/employees")
+            .then((res) => {
+                setData(res.data.employers || []);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }, []);
+
 
     if (!hasMounted) return null;
 
@@ -35,7 +43,7 @@ function Ourteam() {
                 <h1 className="text-center font-normal text-6xl mb-10 text-gray-600">Our Team</h1>
             </Animatedcard>
 
-            <div className="flex flex-wrap justify-center gap-8">
+            <div className="flex flex-wrap justify-center gap-8 h-auto">
                 {data.map((obj, index) => (
                     <Animatedcard key={index} index={index}>
                         <div
@@ -58,6 +66,11 @@ function Ourteam() {
                         </div>
                     </Animatedcard>
                 ))}
+                {loading && (
+                    <div className="mt-4 flex items-center justify-center">
+                        <Lottie animationData={Loading} style={{ height: 150, width: 150 }} />
+                    </div>
+                )}
             </div>
 
             {/* Resume Modal */}
