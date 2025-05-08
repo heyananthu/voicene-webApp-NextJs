@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import EmployersList from './_components/EmployersList';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Page() {
   const router = useRouter();
@@ -47,19 +48,16 @@ function Page() {
 
   if (!isClient) return null;
 
-  // Update individual item in array fields
   const updateFieldArray = (type, value, index) => {
     const updated = [...form[type]];
     updated[index] = value;
     setForm({ ...form, [type]: updated });
   };
 
-  // Add new empty input to array fields
   const addField = (type) => {
     setForm({ ...form, [type]: [...form[type], ''] });
   };
 
-  // Handle file input change
   const handleFileChange = (e) => {
     setForm({ ...form, photo: e.target.files[0] });
   };
@@ -67,7 +65,6 @@ function Page() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Filter out empty strings from array fields before appending
     const filteredArrays = {};
     ['skills', 'experiences', 'projects', 'softskills', 'education', 'achievements'].forEach((field) => {
       filteredArrays[field] = form[field].map(item => item.trim()).filter(Boolean);
@@ -79,7 +76,6 @@ function Page() {
     formData.append('contact', form.contact);
     formData.append('position', form.position);
 
-    // Append filtered arrays properly (without [] in key)
     Object.entries(filteredArrays).forEach(([field, arr]) => {
       arr.forEach(item => formData.append(field, item));
     });
@@ -107,7 +103,6 @@ function Page() {
         });
         document.getElementById('my_modal_1').close();
 
-        // Optionally reset form here if needed
         setForm({
           name: '',
           email: '',
@@ -125,26 +120,36 @@ function Page() {
           language: '',
           photo: null,
         });
-      } else if (response.status === 409) {
+      }
+    } catch (err) {
+      if (err.response && err.response.status === 409) {
         toast.error('Details Already Exist', {
           position: 'top-center',
           theme: 'colored',
           transition: Bounce,
         });
+      } else {
+        toast.error('Error submitting form', {
+          position: 'top-center',
+          theme: 'colored',
+          transition: Bounce,
+        });
+        console.error('Form submission error:', err);
       }
-    } catch (err) {
-      toast.error('Error submitting form', {
-        position: 'top-center',
-        theme: 'colored',
-        transition: Bounce,
-      });
-      console.error('Form submission error:', err);
     }
   };
 
   return (
-    <div className="w-full bg-white h-screen mt-20 px-4" suppressHydrationWarning>
-      <ToastContainer />
+    <div className="w-full bg-white min-h-screen mt-20 px-4 relative" suppressHydrationWarning>
+      {/* Toast container rendered at top level */}
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        transition={Bounce}
+        theme="colored"
+        toastClassName="!z-[9999]" // Ensures toast is above all other elements (including modal)
+      />
+
       <div className="flex justify-end mb-4">
         <button
           className="bg-purple-600 py-2 px-5 text-white rounded-md hover:scale-105 transition"
@@ -156,7 +161,7 @@ function Page() {
 
       <EmployersList />
 
-      <dialog id="my_modal_1" className="modal">
+      <dialog id="my_modal_1" className="modal z-[50]">
         <div className="modal-box bg-gray-200 max-w-xl">
           <form onSubmit={handleSubmit} className="space-y-4 text-black">
             <input
@@ -175,7 +180,6 @@ function Page() {
               onChange={(e) => setForm({ ...form, position: e.target.value })}
               required
             />
-
             <input
               type="email"
               placeholder="Email"
@@ -192,7 +196,6 @@ function Page() {
               onChange={(e) => setForm({ ...form, contact: e.target.value })}
               required
             />
-
             <input
               type="text"
               placeholder="Gender"
@@ -201,7 +204,6 @@ function Page() {
               onChange={(e) => setForm({ ...form, gender: e.target.value })}
               required
             />
-
             <input
               type="date"
               placeholder="Date of Birth"
@@ -209,7 +211,6 @@ function Page() {
               value={form.dob}
               onChange={(e) => setForm({ ...form, dob: e.target.value })}
             />
-
             <input
               type="text"
               placeholder="Nationality"
@@ -218,8 +219,6 @@ function Page() {
               onChange={(e) => setForm({ ...form, nationality: e.target.value })}
               required
             />
-
-
             <input
               type="text"
               placeholder="Language Proficiency"
@@ -228,8 +227,7 @@ function Page() {
               onChange={(e) => setForm({ ...form, language: e.target.value })}
             />
 
-
-            {/* Dynamic Fields */}
+            {/* Dynamic fields */}
             {['education', 'skills', 'softskills', 'experiences', 'projects', 'achievements'].map((field) => (
               <div key={field}>
                 <label className="font-semibold capitalize">{field}</label>
@@ -253,7 +251,6 @@ function Page() {
               </div>
             ))}
 
-
             <input
               type="file"
               accept="image/*"
@@ -265,7 +262,11 @@ function Page() {
               <button type="submit" className="btn bg-purple-600 text-white">
                 Submit
               </button>
-              <button type="button" className="btn" onClick={() => document.getElementById('my_modal_1').close()}>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => document.getElementById('my_modal_1').close()}
+              >
                 Close
               </button>
             </div>

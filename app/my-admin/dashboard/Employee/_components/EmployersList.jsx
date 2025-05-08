@@ -64,9 +64,12 @@ function EmployersList() {
         }
     };
 
-    if (loading) return <p className="p-4 text-center">
-        <Lottie animationData={Loading} size={30}/>
-    </p>;
+    if (loading) return (
+        <div className="flex justify-center">
+          <Lottie animationData={Loading} className='w-[44rem] h-[12rem]' />
+        </div>
+      )
+      
 
     return (
         // <div>
