@@ -15,7 +15,7 @@ import Loading from '@/public/assets/Loading.json'
 
 function EmployersList() {
     const [employers, setEmployers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const router = useRouter();  // Initialize the useRouter hook
     useEffect(() => {
@@ -26,6 +26,7 @@ function EmployersList() {
     }, [router])
 
     useEffect(() => {
+        setLoading(true)
         const fetchEmployers = async () => {
             try {
                 const res = await axios.get('/api/employees');
@@ -63,7 +64,9 @@ function EmployersList() {
         }
     };
 
-    if (loading) return <p className="p-4 text-center">Loading...</p>;
+    if (loading) return <p className="p-4 text-center">
+        <Lottie animationData={Loading} size={30}/>
+    </p>;
 
     return (
         // <div>
