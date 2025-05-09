@@ -1,92 +1,88 @@
-import Employer from "@/models/EmployeeSchema";
-import connectDB from "@/lib/mongodb";
-import multer from "multer";
+import { writeFile } from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
-import { writeFile } from 'fs/promises';
+import connectDB from "@/lib/mongodb";
+import Employer from "@/models/EmployeeSchema";
 
-// Multer setup for file upload
-const storage = multer.diskStorage({
-    destination: './public/uploads', // Save the photo in the public/uploads directory
-    filename: (req, file, cb) => {
-        const uniqueName = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueName);
-    }
-});
-
-const upload = multer({ storage });
-
-// Disable Next.js default body parser (for file upload)
+// Disable body parser for file upload
 export const config = {
     api: {
-        bodyParser: false,  // This is necessary for Multer to work
+        bodyParser: false,
     },
 };
 
-// Helper function to handle Multer middleware
-function runMiddleware(req, res, fn) {
-    return new Promise((resolve, reject) => {
-        fn(req, res, (result) => {
-            if (result instanceof Error) return reject(result);
-            return resolve(result);
-        });
-    });
-}
-
-
-
-// PUT: Update an employer by ID
-export async function PUT(req) {
+export async function PUT(req, { params }) {
     await connectDB();
-    const { id } = req.nextUrl.searchParams;
-
-    const formData = await req.formData();
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const contact = formData.get("contact");
-    const position = formData.get("position");
-
-    const experiences = formData.getAll("experiences[]");
-    const skills = formData.getAll("skills[]");
-
-    const photo = formData.get("photo");
-    let photoUrl = "";
-
-    if (photo && photo.name) {
-        const bytes = await photo.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        const fileName = `${Date.now()}-${photo.name}`;
-        const filePath = path.join(process.cwd(), "public/uploads", fileName);
-
-        await writeFile(filePath, buffer);
-        photoUrl = fileName;
-    }
+    const id = params.id;
 
     try {
+        const formData = await req.formData();
+
+        const name = formData.get("name");
+        const email = formData.get("email");
+        const contact = formData.get("contact");
+        const position = formData.get("position");
+        const dob = formData.get("dob");
+        const gender = formData.get("gender");
+        const nationality = formData.get("nationality");
+        const language = formData.get("language");
+
+
+        const experiences = formData.getAll("experiences");
+        const skills = formData.getAll("skills");
+        const education = formData.getAll("education");
+        const softskills = formData.getAll("softskills");
+        const projects = formData.getAll("projects");
+        const achievements = formData.getAll("achievements");
+
+
+        const photo = formData.get("photo");
+        let photoUrl = "";
+
+        if (photo && typeof photo.name === "string") {
+            const bytes = await photo.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+            const fileName = `${Date.now()}-${photo.name}`;
+            const filePath = path.join(process.cwd(), "public", "uploads", fileName);
+            await writeFile(filePath, buffer);
+            photoUrl = fileName;
+        }
+
         const employer = await Employer.findById(id);
         if (!employer) {
-            return NextResponse.json({ success: false, message: 'Employer not found' }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Employer not found" }, { status: 404 });
         }
 
         employer.name = name || employer.name;
         employer.email = email || employer.email;
         employer.contact = contact || employer.contact;
         employer.position = position || employer.position;
-        employer.skills = skills || employer.skills;
-        employer.experiences = experiences || employer.experiences;
-        employer.photo = photoUrl || employer.photo;
+        employer.dob = dob || employer.dob;
+        employer.gender = gender || employer.gender;
+        employer.nationality = nationality || employer.nationality;
+        employer.language = language || employer.language;
 
+        employer.skills = skills.length ? skills : employer.skills;
+        employer.experiences = experiences.length ? experiences : employer.experiences;
+        employer.education = education.length ? education : employer.education;
+        employer.softskills = softskills.length ? softskills : employer.softskills;
+        employer.projects = projects.length ? projects : employer.projects;
+        employer.achievements = achievements.length ? achievements : employer.achievements;
+        if (photoUrl) {
+            employer.photo = photoUrl;
+        }
         await employer.save();
-        return NextResponse.json({ success: true, employer }, { status: 200 });
+
+        return NextResponse.json({ success: true, updatedEmployer: employer }, { status: 200 });
     } catch (err) {
-        console.error('Error updating employer:', err);
+        console.error("Error updating employer:", err);
         return NextResponse.json({ success: false, message: err.message }, { status: 500 });
     }
 }
 
 
 
-export async function DELETE(req ,  { params }) {
+export async function DELETE(req, { params }) {
     await connectDB();
     try {
         const { id } = params;  // Get the id from the URL

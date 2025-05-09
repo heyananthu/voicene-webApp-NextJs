@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import EmployersList from './_components/EmployersList';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Label } from 'flowbite-react';
 
 function Page() {
   const router = useRouter();
@@ -217,8 +218,8 @@ function Page() {
             />
             <input
               type="date"
+              className="input bg-slate-300"
               placeholder="Date of Birth"
-              className="input input-bordered w-full bg-slate-50"
               value={form.dob}
               onChange={(e) => setForm({ ...form, dob: e.target.value })}
               required
@@ -262,11 +263,12 @@ function Page() {
                 </button>
               </div>
             ))}
-
+            <label>Profile</label>
             <input
               type="file"
               accept="image/*"
               className="file-input file-input-bordered w-full bg-slate-50"
+              placeholder='Profile'
               onChange={handleFileChange}
             />
             {
