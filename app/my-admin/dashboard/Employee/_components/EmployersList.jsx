@@ -203,7 +203,7 @@ function EmployersList() {
             {selectedEmployer && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center text-black">
                     <div className="bg-white w-[90%] max-w-3xl p-6 rounded-lg overflow-y-auto max-h-[90vh] relative">
-                        <button className="absolute top-2 right-2 text-xl font-bold" onClick={() => setSelectedEmployer(null)}>×</button>
+                        <button className="absolute top-2 right-2 text-5xl font-normal" onClick={() => setSelectedEmployer(null)}>×</button>
                         <div className="flex items-center gap-6 mb-4">
                             {/* Safely access the photo property */}
                             <Image src={selectedEmployer.photo ? `/uploads/${selectedEmployer.photo}` : defaultavatar} alt="photo" width={80} height={80} className="rounded-full" />
