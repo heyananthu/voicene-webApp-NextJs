@@ -12,10 +12,11 @@ import dynamic from "next/dynamic";
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import Loading from '@/public/assets/Loading.json'
-
+import Error from '@/public/assets/error.json'
 function EmployersList() {
     const [employers, setEmployers] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false)
 
     const router = useRouter();  // Initialize the useRouter hook
     useEffect(() => {
@@ -34,6 +35,7 @@ function EmployersList() {
                     setEmployers(res.data.employers);
                 }
             } catch (error) {
+                setError(true)
                 console.error('Error fetching employers:', error);
             } finally {
                 setLoading(false);
@@ -66,10 +68,16 @@ function EmployersList() {
 
     if (loading) return (
         <div className="flex justify-center">
-          <Lottie animationData={Loading} className='w-[44rem] h-[12rem]' />
+            <Lottie animationData={Loading} className='w-[45rem] h-[15rem]' />
         </div>
-      )
-      
+    )
+
+    if (error) return (
+        <div className="flex justify-center">
+            <Lottie animationData={Error} className='w-[45rem] h-[15rem]' />
+        </div>
+    )
+
 
     return (
         // <div>

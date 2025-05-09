@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Page() {
   const router = useRouter();
+  const [isDuplicate, setIsDuplicate] = useState(false)
 
   const [form, setForm] = useState({
     name: '',
@@ -123,6 +124,8 @@ function Page() {
       }
     } catch (err) {
       if (err.response && err.response.status === 409) {
+        setIsDuplicate(true)
+
         toast.error('Details Already Exist', {
           position: 'top-center',
           theme: 'colored',
@@ -187,7 +190,12 @@ function Page() {
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
-            />
+            />{
+              isDuplicate && (
+                <p className='text-rose-600'>Email Already Exist</p>
+              )
+            }
+            <p></p>
             <input
               type="text"
               placeholder="Contact Number"
@@ -210,6 +218,7 @@ function Page() {
               className="input input-bordered w-full bg-slate-50"
               value={form.dob}
               onChange={(e) => setForm({ ...form, dob: e.target.value })}
+              required
             />
             <input
               type="text"
@@ -217,7 +226,7 @@ function Page() {
               className="input input-bordered w-full bg-slate-50"
               value={form.nationality}
               onChange={(e) => setForm({ ...form, nationality: e.target.value })}
-              required
+
             />
             <input
               type="text"
