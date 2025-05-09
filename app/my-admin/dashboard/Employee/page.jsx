@@ -10,6 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 function Page() {
   const router = useRouter();
   const [isDuplicate, setIsDuplicate] = useState(false)
+  const [error, setError] = useState(false)
+
 
   const [form, setForm] = useState({
     name: '',
@@ -132,6 +134,7 @@ function Page() {
           transition: Bounce,
         });
       } else {
+        setError(true)
         toast.error('Error submitting form', {
           position: 'top-center',
           theme: 'colored',
@@ -266,6 +269,11 @@ function Page() {
               className="file-input file-input-bordered w-full bg-slate-50"
               onChange={handleFileChange}
             />
+            {
+              error && (
+                <p className='text-red-700 text-center p-4'>Error submitting form , please try Again</p>
+              )
+            }
 
             <div className="modal-action">
               <button type="submit" className="btn bg-purple-600 text-white">
