@@ -20,7 +20,7 @@ function EmployersList() {
     const [selectedEmployer, setSelectedEmployer] = useState(null);
     const [editingEmployer, setEditingEmployer] = useState(null);
     const [formData, setFormData] = useState({
-        name: '', email: '', contact: '', position: '', gender: '', dob: '', nationality: '', language: '',
+        name: '', email: '', contact: '', position: '', gender: '', dob: '', doj: '', nationality: '', language: '',
         education: [], skills: [], softskills: [], experiences: [], projects: [], achievements: []
     });
     const [photo, setPhoto] = useState(null); // state for file input
@@ -127,6 +127,7 @@ function EmployersList() {
                     gender: '',
                     nationality: '',
                     dob: '',
+                    doj: '',
                     language: '',
                     photo: null,
                 });
@@ -203,7 +204,7 @@ function EmployersList() {
             {selectedEmployer && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center text-black">
                     <div className="bg-white w-[90%] max-w-3xl p-6 rounded-lg overflow-y-auto max-h-[90vh] relative">
-                        <button className="absolute top-2 right-2 text-5xl font-normal" onClick={() => setSelectedEmployer(null)}>×</button>
+                        <button className="absolute top-2 right-2 text-5xl font-normal cursor-pointer " onClick={() => setSelectedEmployer(null)}>×</button>
                         <div className="flex items-center gap-6 mb-4">
                             {/* Safely access the photo property */}
                             <Image src={selectedEmployer.photo ? `/uploads/${selectedEmployer.photo}` : defaultavatar} alt="photo" width={80} height={80} className="rounded-full" />
@@ -219,6 +220,7 @@ function EmployersList() {
                             <p><strong>DOB:</strong> {new Date(selectedEmployer.dob).toLocaleDateString()}</p>
                             <p><strong>Nationality:</strong> {selectedEmployer.nationality}</p>
                             <p><strong>Language:</strong> {selectedEmployer.language}</p>
+                            <p><strong>DOJ:</strong> {new Date(selectedEmployer.doj).toLocaleDateString()}</p>
                             <p><strong>Education:</strong> {selectedEmployer.education.join(', ')}</p>
                             <p><strong>Skills:</strong> {selectedEmployer.skills.join(', ')}</p>
                             <p><strong>Soft Skills:</strong> {selectedEmployer.softskills.join(', ')}</p>
@@ -266,6 +268,10 @@ function EmployersList() {
                             <div>
                                 <label className="block text-sm font-semibold">Language</label>
                                 <input type="text" name="language" value={formData.language} onChange={handleInputChange} className="w-full border rounded p-2" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold">Date of Join</label>
+                                <input type="date" name="doj" value={formData.doj} onChange={handleInputChange} className="w-full border rounded p-2" />
                             </div>
                             {/* Education */}
                             <div>

@@ -28,6 +28,7 @@ function Page() {
     gender: '',
     nationality: '',
     dob: '',
+    doj: '',
     language: '',
     photo: null,
   });
@@ -87,6 +88,7 @@ function Page() {
     formData.append('gender', form.gender);
     formData.append('nationality', form.nationality);
     formData.append('dob', form.dob);
+    formData.append('doj', form.doj);
     formData.append('language', form.language);
 
     if (form.photo) formData.append('photo', form.photo);
@@ -121,6 +123,7 @@ function Page() {
           gender: '',
           nationality: '',
           dob: '',
+          doj: '',
           language: '',
           photo: null,
         });
@@ -216,6 +219,7 @@ function Page() {
               onChange={(e) => setForm({ ...form, gender: e.target.value })}
               required
             />
+            <label>Date of Birth</label><br />
             <input
               type="date"
               className="input bg-slate-300"
@@ -238,6 +242,15 @@ function Page() {
               className="input input-bordered w-full bg-slate-50"
               value={form.language}
               onChange={(e) => setForm({ ...form, language: e.target.value })}
+            />
+            <label>Date of Join</label><br />
+            <input
+              type="date"
+              className="input bg-slate-300"
+              placeholder="Date of Join"
+              value={form.doj}
+              onChange={(e) => setForm({ ...form, doj: e.target.value })}
+              required
             />
 
             {/* Dynamic fields */}

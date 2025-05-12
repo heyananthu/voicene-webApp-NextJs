@@ -17,6 +17,7 @@ const EmployerSchema = new mongoose.Schema({
     nationality: { type: String },
     dob: { type: Date },
     language: { type: String },
+    doj: { type: Date },
     photo: { type: String },
 }, {
     timestamps: true,

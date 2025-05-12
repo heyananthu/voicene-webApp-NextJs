@@ -51,7 +51,7 @@ export async function POST(req) {
         const nationality = formData.get("nationality");
         const dob = formData.get("dob");
         const language = formData.get("language");
-
+        const doj = formData.get("doj");
         // Array fields (no [] in getAll key)
         const experiences = formData.getAll("experiences") || [];
         const skills = formData.getAll("skills") || [];
@@ -96,6 +96,7 @@ export async function POST(req) {
             nationality,
             dob: new Date(dob),
             language,
+            doj: new Date(doj),
             photo: photoUrl,
         });
 

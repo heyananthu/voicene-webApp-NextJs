@@ -26,7 +26,7 @@ export async function PUT(req, { params }) {
         const gender = formData.get("gender");
         const nationality = formData.get("nationality");
         const language = formData.get("language");
-
+        const doj = formData.get("doj");
 
         const experiences = formData.getAll("experiences");
         const skills = formData.getAll("skills");
@@ -61,6 +61,8 @@ export async function PUT(req, { params }) {
         employer.gender = gender || employer.gender;
         employer.nationality = nationality || employer.nationality;
         employer.language = language || employer.language;
+        employer.doj = doj || employer.doj;
+
 
         employer.skills = skills.length ? skills : employer.skills;
         employer.experiences = experiences.length ? experiences : employer.experiences;
