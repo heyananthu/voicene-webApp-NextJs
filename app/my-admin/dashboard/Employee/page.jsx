@@ -226,7 +226,7 @@ function Page() {
               placeholder="Date of Birth"
               value={form.dob}
               onChange={(e) => setForm({ ...form, dob: e.target.value })}
-              
+
             />
             <input
               type="text"
@@ -250,7 +250,7 @@ function Page() {
               placeholder="Date of Join"
               value={form.doj}
               onChange={(e) => setForm({ ...form, doj: e.target.value })}
-              
+
             />
 
             {/* Dynamic fields */}

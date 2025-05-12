@@ -50,23 +50,18 @@ function Ourteam() {
                     <Animatedcard key={index} index={index}>
                         <div
                             onClick={() => handleCardClick(obj)}
-                            className="cursor-pointer card bg-white w-80 h-80 shadow-md shadow-slate-300 hover:scale-110 transition-transform duration-500"
+                            className="cursor-pointer bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl w-80 h-80 shadow-lg hover:shadow-xl transition duration-300 p-6 flex flex-col justify-center items-center hover:scale-105"
                         >
-                            <figure className="px-6 pt-6">
-                                <Image
-                                    src={obj.photo ? `/uploads/${obj.photo}` : defaultavatar}
-                                    alt={obj.name}
-                                    className="rounded-full w-32 h-32 object-cover"
-                                    width={128}
-                                    height={128}
-                                />
-                            </figure>
-                            <div className="card-body items-center text-center">
-                                <h2 className="text-3xl font-semibold text-black">{obj.name}</h2>
-                                <p className="text-gray-600 text-sm">{obj.position}</p>
+                            <div className="flex flex-col items-center text-center space-y-2">
+                                <div className="bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold text-indigo-700 shadow-inner">
+                                    {obj.name?.charAt(0)}
+                                </div>
+                                <h2 className="text-xl font-semibold text-gray-800">{obj.name}</h2>
+                                <p className="text-sm text-gray-500">{obj.position}</p>
                             </div>
                         </div>
                     </Animatedcard>
+
                 ))}
                 {loading && (
                     <div className="mt-4 flex items-center justify-center">
@@ -113,6 +108,17 @@ function Ourteam() {
                                 <ResumeBadgeSection title="Soft Skills" items={selectedMember.softskills} />
                                 <ResumeBadgeSectionSkills title="Technical Skills" items={selectedMember.skills} />
                             </div>
+                            {
+                                selectedMember.language && (
+                                    <div >
+                                        <h1 className="text-lg font-semibold border-b pb-1 mb-2 text-black mt-2">Language</h1>
+                                        <p className="text-sm text-gray-600">{selectedMember.language}</p>
+                                    </div>
+
+                                )
+                            }
+
+
                         </motion.div>
                     </motion.div>
                 )}

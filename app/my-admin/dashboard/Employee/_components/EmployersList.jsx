@@ -61,8 +61,13 @@ function EmployersList() {
 
     const handleEdit = (emp) => {
         setEditingEmployer(emp._id);
-        setFormData({ ...emp, dob: new Date(emp.dob).toISOString().split('T')[0] });
+        setFormData({
+            ...emp,
+            dob: new Date(emp.dob).toISOString().split('T')[0],
+            doj: new Date(emp.doj).toISOString().split('T')[0] // ✅ Convert DOJ too
+        });
     };
+
 
 
     const handleSubmit = async (e) => {
