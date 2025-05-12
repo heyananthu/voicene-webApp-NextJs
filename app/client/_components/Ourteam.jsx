@@ -85,10 +85,10 @@ function Ourteam() {
                         exit={{ opacity: 0 }}
                     >
                         <motion.div
-                            className="bg-white rounded-xl shadow-xl p-6 w-[95%] max-w-5xl overflow-y-auto max-h-[90vh] relative"
-                            initial={{ scale: 0.8, opacity: 0 }}
+                            className="bg-white rounded-lg shadow-lg p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative font-serif"
+                            initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.8, opacity: 0 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
                             transition={{ duration: 0.3, ease: "easeOut" }}
                         >
                             <button
@@ -98,46 +98,27 @@ function Ourteam() {
                                 &times;
                             </button>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {/* Left Side - Profile Summary */}
-                                <div className="md:col-span-1 flex flex-col items-center justify-center gap-4">
-                                    <Image
-                                        src={selectedMember.photo ? `/uploads/${selectedMember.photo}` : defaultavatar}
-                                        alt={selectedMember.name}
-                                        className="rounded-full w-32 h-32 md:w-44 md:h-44 object-cover"
-                                        width={128}
-                                        height={128}
-                                    />
-                                    <div className="text-center">
+                            {/* Header */}
+                            <div className="text-center mb-6">
+                                <h2 className="text-3xl font-bold text-gray-900">{selectedMember.name}</h2>
+                                <p className="text-sm text-gray-600">{selectedMember.position}</p>
+                            </div>
 
-                                        <h2 className="text-2xl font-bold text-gray-800">{selectedMember.name}</h2>
-                                        <p className="text-sm text-gray-500">{selectedMember.position}</p>
-                                    </div>
-                                    {/* <div className="text-left w-full text-sm text-gray-700">
-                                        <h3 className="font-semibold mb-2 border-b pb-1">Personal Info</h3>
-                                        <ul className="space-y-1">
-                                            <li><strong>Gender:</strong> {selectedMember.gender}</li>
-                                            <li><strong>DOB:</strong> {new Date(selectedMember.dob).toLocaleDateString()}</li>
-                                            <li><strong>Nationality:</strong> {selectedMember.nationality}</li>
-                                            <li><strong>Languages:</strong> {selectedMember.language}</li>
-                                        </ul>
-                                    </div> */}
-                                </div>
-
-                                {/* Right Side - Resume Content */}
-                                <div className="md:col-span-2 space-y-6 text-sm text-gray-800">
-                                    <ResumeSection title="Education" items={selectedMember.education} />
-                                    <ResumeBadgeSectionSkills title="Skills" items={selectedMember.skills} />
-                                    <ResumeBadgeSection title="Soft Skills" items={selectedMember.softskills} />
-                                    <ResumeSection title="Experience" items={selectedMember.experiences} />
-                                    <ResumeSection title="Projects" items={selectedMember.projects} />
-                                    <ResumeSection title="Achievements" items={selectedMember.achievements} />
-                                </div>
+                            {/* Resume Body */}
+                            <div className="space-y-6 text-sm text-gray-800">
+                                <ResumeSection title="Education" items={selectedMember.education} />
+                                <ResumeSection title="Experience" items={selectedMember.experiences} />
+                                <ResumeSection title="Projects" items={selectedMember.projects} />
+                                <ResumeSection title="Achievements" items={selectedMember.achievements} />
+                                <ResumeBadgeSection title="Soft Skills" items={selectedMember.softskills} />
+                                <ResumeBadgeSectionSkills title="Technical Skills" items={selectedMember.skills} />
                             </div>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+
         </div>
     );
 }
