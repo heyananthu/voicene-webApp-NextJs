@@ -259,7 +259,7 @@ function EmployersList() {
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold">Date of Birth</label>
-                                <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} className="w-full border rounded p-2" />
+                                <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} className="input bg-slate-300 w-full border rounded p-2" />
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold">Nationality</label>
@@ -271,7 +271,7 @@ function EmployersList() {
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold">Date of Join</label>
-                                <input type="date" name="doj" value={formData.doj} onChange={handleInputChange} className="w-full border rounded p-2" />
+                                <input type="date" name="doj" value={formData.doj} onChange={handleInputChange} className="input bg-slate-300 w-full border rounded p-2" />
                             </div>
                             {/* Education */}
                             <div>
