@@ -13,7 +13,6 @@ function Page() {
   const [isDuplicate, setIsDuplicate] = useState(false)
   const [error, setError] = useState(false)
 
-
   const [form, setForm] = useState({
     name: '',
     email: '',

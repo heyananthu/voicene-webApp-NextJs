@@ -52,7 +52,8 @@ export async function POST(req) {
         const dob = formData.get("dob");
         const language = formData.get("language");
         const doj = formData.get("doj");
-        // Array fields (no [] in getAll key)
+
+        // Array fields
         const experiences = formData.getAll("experiences") || [];
         const skills = formData.getAll("skills") || [];
         const projects = formData.getAll("projects") || [];
@@ -80,6 +81,11 @@ export async function POST(req) {
             photoUrl = fileName;
         }
 
+        // Helper to safely parse date or return undefined
+        function parseDate(value) {
+            return value && value.trim() !== "" ? new Date(value) : undefined;
+        }
+
         // Create and save employer
         const employer = new Employer({
             name,
@@ -94,9 +100,9 @@ export async function POST(req) {
             achievements,
             gender,
             nationality,
-            dob: new Date(dob),
+            dob: parseDate(dob),
             language,
-            doj: new Date(doj),
+            doj: parseDate(doj),
             photo: photoUrl,
         });
 
@@ -131,6 +137,7 @@ export async function POST(req) {
         );
     }
 }
+
 
 
 

@@ -61,12 +61,26 @@ function EmployersList() {
 
     const handleEdit = (emp) => {
         setEditingEmployer(emp._id);
+
+        const formatDate = (date) => {
+            if (!date) return '';
+            const d = new Date(date);
+            return isNaN(d) ? '' : d.toISOString().split('T')[0];
+        };
+
         setFormData({
             ...emp,
-            dob: new Date(emp.dob).toISOString().split('T')[0],
-            doj: new Date(emp.doj).toISOString().split('T')[0] // ✅ Convert DOJ too
+            dob: formatDate(emp.dob),
+            doj: formatDate(emp.doj),
+            education: emp.education && emp.education.length ? emp.education : [''],
+            skills: emp.skills && emp.skills.length ? emp.skills : [''],
+            softskills: emp.softskills && emp.softskills.length ? emp.softskills : [''],
+            experiences: emp.experiences && emp.experiences.length ? emp.experiences : [''],
+            projects: emp.projects && emp.projects.length ? emp.projects : [''],
+            achievements: emp.achievements && emp.achievements.length ? emp.achievements : [''],
         });
     };
+
 
 
 
@@ -169,6 +183,16 @@ function EmployersList() {
         }));
     };
 
+    function formatDateDDMMYYYY(date) {
+        if (!date) return '';
+        const d = new Date(date);
+        if (isNaN(d)) return '';
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
 
 
     const handleFileChange = (e) => {
@@ -222,10 +246,10 @@ function EmployersList() {
 
                         <div className="space-y-3 text-sm text-gray-700">
                             <p><strong>Gender:</strong> {selectedEmployer.gender}</p>
-                            <p><strong>DOB:</strong> {new Date(selectedEmployer.dob).toLocaleDateString()}</p>
+                            <p><strong>DOB:</strong> {formatDateDDMMYYYY(selectedEmployer.dob)}</p>
                             <p><strong>Nationality:</strong> {selectedEmployer.nationality}</p>
                             <p><strong>Language:</strong> {selectedEmployer.language}</p>
-                            <p><strong>DOJ:</strong> {new Date(selectedEmployer.doj).toLocaleDateString()}</p>
+                            <p><strong>DOJ:</strong> {formatDateDDMMYYYY(selectedEmployer.doj)}</p>
                             <p><strong>Education:</strong> {selectedEmployer.education.join(', ')}</p>
                             <p><strong>Skills:</strong> {selectedEmployer.skills.join(', ')}</p>
                             <p><strong>Soft Skills:</strong> {selectedEmployer.softskills.join(', ')}</p>
