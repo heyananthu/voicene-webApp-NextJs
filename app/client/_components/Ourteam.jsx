@@ -53,9 +53,9 @@ function Ourteam() {
                             className="cursor-pointer bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl w-80 h-80 shadow-lg hover:shadow-xl transition duration-300 p-6 flex flex-col justify-center items-center hover:scale-105"
                         >
                             <div className="flex flex-col items-center text-center space-y-2">
-                                <div className="bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold text-indigo-700 shadow-inner">
+                                {/* <div className="bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold text-indigo-700 shadow-inner">
                                     {obj.name?.charAt(0)}
-                                </div>
+                                </div> */}
                                 <h2 className="text-xl font-semibold text-gray-800">{obj.name}</h2>
                                 <p className="text-sm text-gray-500">{obj.position}</p>
                             </div>
