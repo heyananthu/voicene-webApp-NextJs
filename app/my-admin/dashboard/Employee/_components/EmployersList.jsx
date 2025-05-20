@@ -297,7 +297,7 @@ function EmployersList() {
                             <p><strong>Soft Skills:</strong> {selectedEmployer.softskills.join(', ')}</p>
                             <p><strong>Experience:</strong> {selectedEmployer.experiences.join(', ')}</p>
                             <p><strong>Projects:</strong> {selectedEmployer.projects.join(', ')}</p>
-                            <p><strong>Achievements:</strong> {selectedEmployer.achievements.join(', ')}</p>
+                            <p><strong>My Accomplishments:</strong> {selectedEmployer.achievements.join(', ')}</p>
                         </div>
                     </div>
                 </div>
@@ -486,7 +486,7 @@ function EmployersList() {
 
                             {/* Achievements */}
                             <div>
-                                <label className="block text-sm font-semibold">Achievements</label>
+                                <label className="block text-sm font-semibold">My Accomplishments</label>
                                 {formData.achievements.map((item, index) => (
                                     <input
                                         key={index}

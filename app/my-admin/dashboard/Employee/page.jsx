@@ -21,7 +21,7 @@ function Page() {
     contact: '',
     experiences: [''],
     position: '',
-    totalexperience:'',
+    totalexperience: '',
     skills: [''],
     projects: [''],
     softskills: [''],
@@ -119,7 +119,7 @@ function Page() {
           contact: '',
           experiences: [''],
           position: '',
-          totalexperience:'',
+          totalexperience: '',
           skills: [''],
           projects: [''],
           softskills: [''],
@@ -223,7 +223,7 @@ function Page() {
               className="input input-bordered w-full bg-slate-50"
               value={form.gender}
               onChange={(e) => setForm({ ...form, gender: e.target.value })}
-              required
+
             />
             <label>Date of Birth</label><br />
             <input
@@ -305,7 +305,7 @@ function Page() {
             <div className="modal-action">
               <button
                 type="submit"
-                className="btn bg-purple-600 text-white flex items-center justify-center"
+                className=" bg-purple-600 px-4 py-2 rounded text-white flex items-center justify-center"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -330,7 +330,7 @@ function Page() {
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                       ></path>
                     </svg>
-                   
+                    submitting...
                   </>
                 ) : (
                   'Submit'
