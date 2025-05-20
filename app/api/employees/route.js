@@ -41,12 +41,14 @@ export async function POST(req) {
 
     try {
         const formData = await req.formData();
+        
 
         // Basic fields
         const name = formData.get("name");
         const email = formData.get("email");
         const contact = formData.get("contact");
         const position = formData.get("position");
+        const totalexperience = formData.get("totalexperience");
         const gender = formData.get("gender");
         const nationality = formData.get("nationality");
         const dob = formData.get("dob");
@@ -93,6 +95,7 @@ export async function POST(req) {
             contact,
             experiences,
             position,
+            totalexperience,
             skills,
             projects,
             softskills,

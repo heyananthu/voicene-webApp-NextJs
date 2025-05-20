@@ -6,6 +6,7 @@ const EmployerSchema = new mongoose.Schema({
     contact: { type: String },
     experiences: [{ type: String }],
     position: { type: String },
+    totalexperience: { type: String },
 
     skills: [{ type: String }],
     projects: [{ type: String }],

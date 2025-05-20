@@ -21,6 +21,7 @@ function Page() {
     contact: '',
     experiences: [''],
     position: '',
+    totalexperience:'',
     skills: [''],
     projects: [''],
     softskills: [''],
@@ -81,6 +82,7 @@ function Page() {
     formData.append('email', form.email);
     formData.append('contact', form.contact);
     formData.append('position', form.position);
+    formData.append('totalexperience', form.totalexperience);
 
     Object.entries(filteredArrays).forEach(([field, arr]) => {
       arr.forEach(item => formData.append(field, item));
@@ -117,6 +119,7 @@ function Page() {
           contact: '',
           experiences: [''],
           position: '',
+          totalexperience:'',
           skills: [''],
           projects: [''],
           softskills: [''],
@@ -253,7 +256,13 @@ function Page() {
               placeholder="Date of Join"
               value={form.doj}
               onChange={(e) => setForm({ ...form, doj: e.target.value })}
-
+            />
+            <input
+              type="text"
+              placeholder="Total Experience"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.totalexperience}
+              onChange={(e) => setForm({ ...form, totalexperience: e.target.value })}
             />
 
             {/* Dynamic fields */}

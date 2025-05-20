@@ -18,10 +18,12 @@ export async function PUT(req, { params }) {
     try {
         const formData = await req.formData();
 
+
         const name = formData.get("name");
         const email = formData.get("email");
         const contact = formData.get("contact");
         const position = formData.get("position");
+        const totalexperience = formData.get("totalexperience");
         const dob = formData.get("dob");
         const gender = formData.get("gender");
         const nationality = formData.get("nationality");
@@ -53,23 +55,25 @@ export async function PUT(req, { params }) {
             return NextResponse.json({ success: false, message: "Employer not found" }, { status: 404 });
         }
 
-        employer.name = name || employer.name;
-        employer.email = email || employer.email;
-        employer.contact = contact || employer.contact;
-        employer.position = position || employer.position;
-        employer.dob = dob || employer.dob;
-        employer.gender = gender || employer.gender;
-        employer.nationality = nationality || employer.nationality;
-        employer.language = language || employer.language;
-        employer.doj = doj || employer.doj;
+        employer.name = name !== null ? name : employer.name;
+        employer.email = email !== null ? email : employer.email;
+        employer.contact = contact !== null ? contact : employer.contact;
+        employer.position = position !== null ? position : employer.position;
+        employer.totalexperience = totalexperience !== null ? totalexperience : employer.totalexperience;
+        employer.dob = dob !== null ? dob : employer.dob;
+        employer.gender = gender !== null ? gender : employer.gender;
+        employer.nationality = nationality !== null ? nationality : employer.nationality;
+        employer.language = language !== null ? language : employer.language;
+        employer.doj = doj !== null ? doj : employer.doj;
 
+        // For arrays, filter out empty strings and set to [] if empty
+        employer.skills = skills ? skills.filter(Boolean) : [];
+        employer.experiences = experiences ? experiences.filter(Boolean) : [];
+        employer.education = education ? education.filter(Boolean) : [];
+        employer.softskills = softskills ? softskills.filter(Boolean) : [];
+        employer.projects = projects ? projects.filter(Boolean) : [];
+        employer.achievements = achievements ? achievements.filter(Boolean) : [];
 
-        employer.skills = skills.length ? skills : employer.skills;
-        employer.experiences = experiences.length ? experiences : employer.experiences;
-        employer.education = education.length ? education : employer.education;
-        employer.softskills = softskills.length ? softskills : employer.softskills;
-        employer.projects = projects.length ? projects : employer.projects;
-        employer.achievements = achievements.length ? achievements : employer.achievements;
         if (photoUrl) {
             employer.photo = photoUrl;
         }

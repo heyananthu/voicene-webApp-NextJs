@@ -71,58 +71,54 @@ function Ourteam() {
             </div>
 
             {/* Resume Modal */}
-            <AnimatePresence>
-                {selectedMember && (
-                    <motion.div
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                    >
-                        <motion.div
-                            className="bg-white rounded-lg shadow-lg p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative font-serif"
-                            initial={{ scale: 0.95, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.95, opacity: 0 }}
-                            transition={{ duration: 0.3, ease: "easeOut" }}
-                        >
-                            <button
-                                onClick={closeModal}
-                                className="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl"
-                            >
-                                &times;
-                            </button>
+           <AnimatePresence>
+  {selectedMember && (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative font-sans"
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
+        <button
+          onClick={closeModal}
+          className="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl"
+        >
+          &times;
+        </button>
 
-                            {/* Header */}
-                            <div className="text-center mb-6">
-                                <h2 className="text-3xl font-bold text-gray-900">{selectedMember.name}</h2>
-                                <p className="text-sm text-gray-600">{selectedMember.position}</p>
-                            </div>
+        {/* Header with Initial Avatar */}
+        <div className="flex flex-col items-center mb-6 space-y-2">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 flex items-center justify-center text-3xl font-bold text-white shadow-inner">
+            {selectedMember.name?.charAt(0)}
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900">{selectedMember.name}</h2>
+          <p className="text-sm text-gray-600">{selectedMember.position}</p>
+          {selectedMember.totalexperience && (
+            <p className="text-sm text-gray-600">
+              Total Experience: {selectedMember.totalexperience}
+            </p>
+          )}
+        </div>
 
-                            {/* Resume Body */}
-                            <div className="space-y-6 text-sm text-gray-800">
-                                {/* <ResumeSection title="Education" items={selectedMember.education} /> */}
-                                <ResumeSection title="Experience" items={selectedMember.experiences} />
-                                <ResumeSection title="Projects" items={selectedMember.projects} />
-                                <ResumeSection title="Achievements" items={selectedMember.achievements} />
-                                {/* <ResumeBadgeSection title="Soft Skills" items={selectedMember.softskills} /> */}
-                                <ResumeBadgeSectionSkills title="Technical Skills" items={selectedMember.skills} />
-                            </div>
-                            {/* {
-                                selectedMember.language && (
-                                    <div >
-                                        <h1 className="text-lg font-semibold border-b pb-1 mb-2 text-black mt-2">Language</h1>
-                                        <p className="text-sm text-gray-600">{selectedMember.language}</p>
-                                    </div>
+        {/* Resume Body */}
+        <div className="space-y-6 text-sm text-gray-800">
+          <ResumeSection title="Experience" items={selectedMember.experiences} />
+          <ResumeSection title="Projects" items={selectedMember.projects} />
+          <ResumeSection title="Achievements" items={selectedMember.achievements} />
+          <ResumeBadgeSectionSkills title="Technical Skills" items={selectedMember.skills} />
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
-                                )
-                            } */}
-
-
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
 
 
         </div>

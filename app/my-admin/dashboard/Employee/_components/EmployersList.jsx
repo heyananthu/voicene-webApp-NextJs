@@ -24,7 +24,7 @@ function EmployersList() {
 
 
     const [formData, setFormData] = useState({
-        name: '', email: '', contact: '', position: '', gender: '', dob: '', doj: '', nationality: '', language: '',
+        name: '', email: '', contact: '', position: '', totalexperience: '', gender: '', dob: '', doj: '', nationality: '', language: '',
         education: [], skills: [], softskills: [], experiences: [], projects: [], achievements: []
     });
     const [photo, setPhoto] = useState(null); // state for file input
@@ -99,16 +99,15 @@ function EmployersList() {
         // Loop through formData object and append each field to FormData
         for (const [key, value] of Object.entries(formData)) {
             if (Array.isArray(value)) {
-                // Handle array fields
-                value.forEach((item) => {
-                    if (typeof item === 'string' && item.trim()) {  // Ensure the item is a string before trimming
-                        formDataToSubmit.append(key, item.trim()); // Use key without "[]" in the name
-                    }
-                });
-            } else {
-                if (typeof value === 'string' && value.trim()) {  // Ensure value is a string before trimming
-                    formDataToSubmit.append(key, value.trim());
+                if (value.length === 0) {
+                    formDataToSubmit.append(key, '');
+                } else {
+                    value.forEach((item) => {
+                        formDataToSubmit.append(key, item.trim());
+                    });
                 }
+            } else {
+                formDataToSubmit.append(key, typeof value === 'string' ? value.trim() : value);
             }
         }
 
@@ -145,6 +144,7 @@ function EmployersList() {
                     contact: '',
                     experiences: [''],
                     position: '',
+                    totalexperience: '',
                     skills: [''],
                     projects: [''],
                     softskills: [''],
@@ -286,6 +286,7 @@ function EmployersList() {
                         </div>
 
                         <div className="space-y-3 text-sm text-gray-700">
+                            <p><strong>Total Experience : </strong> {selectedEmployer.totalexperience}</p>
                             <p><strong>Gender:</strong> {selectedEmployer.gender}</p>
                             <p><strong>DOB:</strong> {formatDateDDMMYYYY(selectedEmployer.dob)}</p>
                             <p><strong>Nationality:</strong> {selectedEmployer.nationality}</p>
@@ -343,6 +344,11 @@ function EmployersList() {
                                 <label className="block text-sm font-semibold">Date of Join</label>
                                 <input type="date" name="doj" value={formData.doj} onChange={handleInputChange} className="input bg-slate-300 w-full border rounded p-2" />
                             </div>
+                            <div>
+                                <label className="block text-sm font-semibold">Total Experience</label>
+                                <input type="text" name="totalexperience" value={formData.totalexperience} onChange={handleInputChange} className="w-full border rounded p-2" />
+                            </div>
+
                             {/* Education */}
                             <div>
                                 <label className="block text-sm font-semibold">Education</label>
