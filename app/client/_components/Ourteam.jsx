@@ -101,14 +101,14 @@ function Ourteam() {
 
                             {/* Resume Body */}
                             <div className="space-y-6 text-sm text-gray-800">
-                                <ResumeSection title="Education" items={selectedMember.education} />
+                                {/* <ResumeSection title="Education" items={selectedMember.education} /> */}
                                 <ResumeSection title="Experience" items={selectedMember.experiences} />
                                 <ResumeSection title="Projects" items={selectedMember.projects} />
                                 <ResumeSection title="Achievements" items={selectedMember.achievements} />
-                                <ResumeBadgeSection title="Soft Skills" items={selectedMember.softskills} />
+                                {/* <ResumeBadgeSection title="Soft Skills" items={selectedMember.softskills} /> */}
                                 <ResumeBadgeSectionSkills title="Technical Skills" items={selectedMember.skills} />
                             </div>
-                            {
+                            {/* {
                                 selectedMember.language && (
                                     <div >
                                         <h1 className="text-lg font-semibold border-b pb-1 mb-2 text-black mt-2">Language</h1>
@@ -116,7 +116,7 @@ function Ourteam() {
                                     </div>
 
                                 )
-                            }
+                            } */}
 
 
                         </motion.div>

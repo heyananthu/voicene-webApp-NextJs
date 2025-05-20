@@ -19,6 +19,10 @@ function EmployersList() {
     const [error, setError] = useState(false);
     const [selectedEmployer, setSelectedEmployer] = useState(null);
     const [editingEmployer, setEditingEmployer] = useState(null);
+    const [deletingId, setDeletingId] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+
     const [formData, setFormData] = useState({
         name: '', email: '', contact: '', position: '', gender: '', dob: '', doj: '', nationality: '', language: '',
         education: [], skills: [], softskills: [], experiences: [], projects: [], achievements: []
@@ -48,6 +52,7 @@ function EmployersList() {
     }, []);
 
     const handleDelete = async (id) => {
+        setDeletingId(id);
         try {
             const res = await axios.delete(`/api/employees/${id}`);
             if (res.status === 200) {
@@ -56,6 +61,8 @@ function EmployersList() {
             }
         } catch (error) {
             console.error('Delete Error:', error);
+        } finally {
+            setDeletingId(null);
         }
     };
 
@@ -86,7 +93,7 @@ function EmployersList() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setIsSubmitting(true);
         const formDataToSubmit = new FormData();
 
         // Loop through formData object and append each field to FormData
@@ -165,6 +172,9 @@ function EmployersList() {
                 transition: Bounce,
             });
         }
+        finally {
+            setIsSubmitting(false);
+        }
     };
 
 
@@ -223,7 +233,38 @@ function EmployersList() {
                         </div>
                         <div className="mt-4 flex justify-end gap-2">
                             <button onClick={(e) => { e.stopPropagation(); handleEdit(emp); }} className="text-green-600 cursor-pointer"><BiEdit size={25} /></button>
-                            <button onClick={(e) => { e.stopPropagation(); handleDelete(emp?._id); }} className="text-red-600 cursor-pointer"><MdDelete size={25} /></button>
+                            {/* <button onClick={(e) => { e.stopPropagation(); handleDelete(emp?._id); }} className="text-red-600 cursor-pointer"><MdDelete size={25} /></button> */}
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleDelete(emp?._id); }}
+                                className="text-red-600 cursor-pointer flex items-center justify-center"
+                                disabled={deletingId === emp._id}
+                            >
+                                {deletingId === emp._id ? (
+                                    <svg
+                                        className="animate-spin h-5 w-5 text-red-600"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            className="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                        ></circle>
+                                        <path
+                                            className="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                        ></path>
+                                    </svg>
+                                ) : (
+                                    <MdDelete size={25} />
+                                )}
+                            </button>
+
                         </div>
                     </div>
                 ))}
@@ -472,7 +513,41 @@ function EmployersList() {
 
                             <div className="mt-4 flex justify-end gap-4">
                                 <button type="button" onClick={() => setEditingEmployer(null)} className="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
-                                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                                {/* <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Save</button> */}
+                                <button
+                                    type="submit"
+                                    className="bg-purple-600 text-white px-4 py-2 rounded flex items-center justify-center"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <svg
+                                                className="animate-spin h-5 w-5 mr-2 text-white"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                ></circle>
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                                ></path>
+                                            </svg>
+                                            Updating...
+                                        </>
+                                    ) : (
+                                        'Update'
+                                    )}
+                                </button>
+
                             </div>
                         </form>
                     </div>

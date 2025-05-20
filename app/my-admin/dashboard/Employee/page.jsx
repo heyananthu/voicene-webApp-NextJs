@@ -12,6 +12,8 @@ function Page() {
   const router = useRouter();
   const [isDuplicate, setIsDuplicate] = useState(false)
   const [error, setError] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const [form, setForm] = useState({
     name: '',
@@ -68,7 +70,7 @@ function Page() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsSubmitting(true);
     const filteredArrays = {};
     ['skills', 'experiences', 'projects', 'softskills', 'education', 'achievements'].forEach((field) => {
       filteredArrays[field] = form[field].map(item => item.trim()).filter(Boolean);
@@ -106,6 +108,7 @@ function Page() {
           theme: 'colored',
           transition: Bounce,
         });
+        setIsSubmitting(false);
         document.getElementById('my_modal_1').close();
 
         setForm({
@@ -145,6 +148,7 @@ function Page() {
         });
         console.error('Form submission error:', err);
       }
+      setIsSubmitting(false);
     }
   };
 
@@ -290,9 +294,40 @@ function Page() {
             }
 
             <div className="modal-action">
-              <button type="submit" className="btn bg-purple-600 text-white">
-                Submit
+              <button
+                type="submit"
+                className="btn bg-purple-600 text-white flex items-center justify-center"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5 mr-2 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
+                    </svg>
+                   
+                  </>
+                ) : (
+                  'Submit'
+                )}
               </button>
+
               <button
                 type="button"
                 className="btn"
