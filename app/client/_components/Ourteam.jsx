@@ -110,9 +110,9 @@ function Ourteam() {
                             {/* Resume Body */}
                             <div className="space-y-6 text-sm text-gray-800">
                                 {/* <ResumeSection title="Experience" items={selectedMember.experiences} /> */}
-                                <ResumeSection title="Projects" items={selectedMember.projects} />
-                                <ResumeSection title="My Accomplishments" items={selectedMember.achievements} />
                                 <ResumeBadgeSectionSkills title="Technical Skills" items={selectedMember.skills} />
+                                <ResumeSection title="My Accomplishments" items={selectedMember.achievements} />
+                                <ResumeSection title="Projects" items={selectedMember.projects} />
                             </div>
                         </motion.div>
                     </motion.div>

@@ -274,9 +274,8 @@ function EmployersList() {
             {selectedEmployer && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center text-black">
                     <div className="bg-white w-[90%] max-w-3xl p-6 rounded-lg overflow-y-auto max-h-[90vh] relative">
-                        <button className="absolute top-2 right-2 text-5xl font-normal cursor-pointer " onClick={() => setSelectedEmployer(null)}>×</button>
+                        <button className="absolute top-2 right-2 text-5xl font-normal cursor-pointer" onClick={() => setSelectedEmployer(null)}>×</button>
                         <div className="flex items-center gap-6 mb-4">
-                            {/* Safely access the photo property */}
                             <Image src={selectedEmployer.photo ? `/uploads/${selectedEmployer.photo}` : defaultavatar} alt="photo" width={80} height={80} className="rounded-full" />
                             <div>
                                 <h2 className="text-xl font-bold">{selectedEmployer.name}</h2>
@@ -286,18 +285,60 @@ function EmployersList() {
                         </div>
 
                         <div className="space-y-3 text-sm text-gray-700">
-                            <p><strong>Total Experience : </strong> {selectedEmployer.totalexperience}</p>
+                            <p><strong>Total Experience:</strong> {selectedEmployer.totalexperience}</p>
                             <p><strong>Gender:</strong> {selectedEmployer.gender}</p>
                             <p><strong>DOB:</strong> {formatDateDDMMYYYY(selectedEmployer.dob)}</p>
                             <p><strong>Nationality:</strong> {selectedEmployer.nationality}</p>
                             <p><strong>Language:</strong> {selectedEmployer.language}</p>
                             <p><strong>DOJ:</strong> {formatDateDDMMYYYY(selectedEmployer.doj)}</p>
-                            <p><strong>Education:</strong> {selectedEmployer.education.join(', ')}</p>
-                            <p><strong>Skills:</strong> {selectedEmployer.skills.join(', ')}</p>
-                            <p><strong>Soft Skills:</strong> {selectedEmployer.softskills.join(', ')}</p>
-                            <p><strong>Experience:</strong> {selectedEmployer.experiences.join(', ')}</p>
-                            <p><strong>Projects:</strong> {selectedEmployer.projects.join(', ')}</p>
-                            <p><strong>My Accomplishments:</strong> {selectedEmployer.achievements.join(', ')}</p>
+                            <div>
+                                <strong>Education:</strong>
+                                <ul className="list-disc pl-5">
+                                    {selectedEmployer.education.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div>
+                                <strong>Skills:</strong>
+                                <ul className="list-disc pl-5">
+                                    {selectedEmployer.skills.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div>
+                                <strong>Soft Skills:</strong>
+                                <ul className="list-disc pl-5">
+                                    {selectedEmployer.softskills.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div>
+                                <strong>Experience:</strong>
+                                <ul className="list-disc pl-5">
+                                    {selectedEmployer.experiences.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div>
+                                <strong>Projects:</strong>
+                                <ul className="list-disc pl-5">
+                                    {selectedEmployer.projects.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div>
+                                <strong>My Accomplishments:</strong>
+                                <ul className="list-disc pl-5">
+                                    {selectedEmployer.achievements.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
