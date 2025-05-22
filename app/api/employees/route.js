@@ -41,7 +41,6 @@ export async function POST(req) {
 
     try {
         const formData = await req.formData();
-        
 
         // Basic fields
         const name = formData.get("name");
@@ -58,10 +57,23 @@ export async function POST(req) {
         // Array fields
         const experiences = formData.getAll("experiences") || [];
         const skills = formData.getAll("skills") || [];
-        const projects = formData.getAll("projects") || [];
         const softskills = formData.getAll("softskills") || [];
         const education = formData.getAll("education") || [];
         const achievements = formData.getAll("achievements") || [];
+
+        // Parse projects JSON string into array of objects
+        let projects = [];
+        const projectsRaw = formData.get("projects");
+        if (projectsRaw) {
+            try {
+                projects = JSON.parse(projectsRaw);
+            } catch (e) {
+                return NextResponse.json(
+                    { success: false, message: "Invalid projects data format" },
+                    { status: 400 }
+                );
+            }
+        }
 
         // File handling (photo)
         const photo = formData.get("photo");
@@ -97,7 +109,7 @@ export async function POST(req) {
             position,
             totalexperience,
             skills,
-            projects,
+            projects, // now an array of objects
             softskills,
             education,
             achievements,

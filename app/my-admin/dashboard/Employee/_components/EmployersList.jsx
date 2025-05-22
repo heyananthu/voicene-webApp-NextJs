@@ -22,10 +22,16 @@ function EmployersList() {
     const [deletingId, setDeletingId] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-
+    // Projects is now an array of objects
     const [formData, setFormData] = useState({
         name: '', email: '', contact: '', position: '', totalexperience: '', gender: '', dob: '', doj: '', nationality: '', language: '',
-        education: [], skills: [], softskills: [], experiences: [], projects: [], achievements: []
+        education: [''], skills: [''], softskills: [''], experiences: [''], projects: [{
+            projectName: '',
+            client: '',
+            teamSize: '',
+            technology: '',
+            description: ''
+        }], achievements: ['']
     });
     const [photo, setPhoto] = useState(null); // state for file input
 
@@ -83,13 +89,51 @@ function EmployersList() {
             skills: emp.skills && emp.skills.length ? emp.skills : [''],
             softskills: emp.softskills && emp.softskills.length ? emp.softskills : [''],
             experiences: emp.experiences && emp.experiences.length ? emp.experiences : [''],
-            projects: emp.projects && emp.projects.length ? emp.projects : [''],
+            projects:
+                Array.isArray(emp.projects) && typeof emp.projects[0] === 'object'
+                    ? emp.projects
+                    : [{
+                        projectName: '',
+                        client: '',
+                        teamSize: '',
+                        technology: '',
+                        description: ''
+                    }],
             achievements: emp.achievements && emp.achievements.length ? emp.achievements : [''],
         });
     };
 
+    // For project subfields
+    const handleProjectFieldChange = (index, field, value) => {
+        setFormData((prev) => {
+            const updatedProjects = [...prev.projects];
+            updatedProjects[index][field] = value;
+            return { ...prev, projects: updatedProjects };
+        });
+    };
 
+    const addProjectField = () => {
+        setFormData((prev) => ({
+            ...prev,
+            projects: [
+                ...prev.projects,
+                {
+                    projectName: '',
+                    client: '',
+                    teamSize: '',
+                    technology: '',
+                    description: ''
+                }
+            ]
+        }));
+    };
 
+    const removeProjectField = (index) => {
+        setFormData((prev) => ({
+            ...prev,
+            projects: prev.projects.filter((_, i) => i !== index)
+        }));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -98,7 +142,10 @@ function EmployersList() {
 
         // Loop through formData object and append each field to FormData
         for (const [key, value] of Object.entries(formData)) {
-            if (Array.isArray(value)) {
+            if (key === 'projects') {
+                // Serialize projects as JSON string
+                formDataToSubmit.append('projects', JSON.stringify(value));
+            } else if (Array.isArray(value)) {
                 if (value.length === 0) {
                     formDataToSubmit.append(key, '');
                 } else {
@@ -146,7 +193,13 @@ function EmployersList() {
                     position: '',
                     totalexperience: '',
                     skills: [''],
-                    projects: [''],
+                    projects: [{
+                        projectName: '',
+                        client: '',
+                        teamSize: '',
+                        technology: '',
+                        description: ''
+                    }],
                     softskills: [''],
                     education: [''],
                     achievements: [''],
@@ -177,8 +230,6 @@ function EmployersList() {
         }
     };
 
-
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -186,7 +237,6 @@ function EmployersList() {
 
     const handleArrayChange = (e, field) => {
         const { value } = e.target;
-        // Split by comma, remove extra spaces and empty strings
         setFormData((prev) => ({
             ...prev,
             [field]: value.split(',').map(item => item.trim()).filter(item => item !== ''),
@@ -203,10 +253,8 @@ function EmployersList() {
         return `${day}/${month}/${year}`;
     }
 
-
-
     const handleFileChange = (e) => {
-        setPhoto(e.target.files[0]); // Save the selected file
+        setPhoto(e.target.files[0]);
     };
 
     if (loading) return <div className="flex justify-center"><Lottie animationData={Loading} className='w-[45rem] h-[15rem]' /></div>;
@@ -214,6 +262,7 @@ function EmployersList() {
 
     return (
         <div className="p-6 bg-white min-h-screen">
+            <ToastContainer />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {employers?.map((emp) => (
                     <div key={emp?._id || emp?.name || emp?.position || Math.random()} className="bg-gray-100 shadow-md rounded-lg p-4 cursor-pointer hover:shadow-xl transition"
@@ -233,7 +282,6 @@ function EmployersList() {
                         </div>
                         <div className="mt-4 flex justify-end gap-2">
                             <button onClick={(e) => { e.stopPropagation(); handleEdit(emp); }} className="text-green-600 cursor-pointer"><BiEdit size={25} /></button>
-                            {/* <button onClick={(e) => { e.stopPropagation(); handleDelete(emp?._id); }} className="text-red-600 cursor-pointer"><MdDelete size={25} /></button> */}
                             <button
                                 onClick={(e) => { e.stopPropagation(); handleDelete(emp?._id); }}
                                 className="text-red-600 cursor-pointer flex items-center justify-center"
@@ -264,7 +312,6 @@ function EmployersList() {
                                     <MdDelete size={25} />
                                 )}
                             </button>
-
                         </div>
                     </div>
                 ))}
@@ -272,146 +319,174 @@ function EmployersList() {
 
             {/* Resume Modal */}
             {selectedEmployer && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center text-black">
-                    <div className="bg-white w-[90%] max-w-3xl p-6 rounded-lg overflow-y-auto max-h-[90vh] relative">
-                        <button className="absolute top-2 right-2 text-5xl font-normal cursor-pointer" onClick={() => setSelectedEmployer(null)}>×</button>
-                        <div className="flex items-center gap-6 mb-4">
-                            <Image src={selectedEmployer.photo ? `/uploads/${selectedEmployer.photo}` : defaultavatar} alt="photo" width={80} height={80} className="rounded-full" />
+                <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center text-gray-900 font-sans">
+                    <div className="bg-white w-[95%] max-w-6xl p-6 lg:p-10 rounded-xl shadow-2xl overflow-y-auto max-h-[90vh] relative">
+
+                        {/* Close Button */}
+                        <button
+                            className="absolute top-4 right-4 text-5xl text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                            onClick={() => setSelectedEmployer(null)}
+                        >
+                            ×
+                        </button>
+
+                        {/* Header Section */}
+                        <div className="flex items-center gap-6 mb-8 border-b pb-6">
+                            <Image
+                                src={selectedEmployer.photo ? `/uploads/${selectedEmployer.photo}` : defaultavatar}
+                                alt="Profile photo"
+                                width={96}
+                                height={96}
+                                className="rounded-full border-2 border-gray-200"
+                            />
                             <div>
-                                <h2 className="text-xl font-bold">{selectedEmployer.name}</h2>
-                                <p className="text-gray-500">{selectedEmployer.position}</p>
-                                <p className="text-sm text-gray-700">{selectedEmployer.email} | {selectedEmployer.contact}</p>
+                                <h2 className="text-2xl font-bold text-gray-800">{selectedEmployer.name}</h2>
+                                <p className="text-lg text-gray-600">{selectedEmployer.position}</p>
+                                <p className="text-sm text-gray-500 mt-1">
+                                    {selectedEmployer.email} | {selectedEmployer.contact}
+                                </p>
                             </div>
                         </div>
 
-                        <div className="space-y-3 text-sm text-gray-700">
-                            <p><strong>Total Experience:</strong> {selectedEmployer.totalexperience}</p>
-                            <p><strong>Gender:</strong> {selectedEmployer.gender}</p>
-                            <p><strong>DOB:</strong> {formatDateDDMMYYYY(selectedEmployer.dob)}</p>
-                            <p><strong>Nationality:</strong> {selectedEmployer.nationality}</p>
-                            <p><strong>Language:</strong> {selectedEmployer.language}</p>
-                            <p><strong>DOJ:</strong> {formatDateDDMMYYYY(selectedEmployer.doj)}</p>
-                            <div>
-                                <strong>Education:</strong>
-                                <ul className="list-disc pl-5">
-                                    {selectedEmployer.education.map((item, index) => (
-                                        <li key={index}>{item}</li>
-                                    ))}
-                                </ul>
+                        {/* Resume Content: Two-column layout with scrollable flow */}
+                        <div className="flex flex-col lg:flex-row gap-6 text-gray-700">
+
+                            {/* Left Side Sections */}
+                            <div className="flex-1 space-y-6">
+
+                                <Section title="Personal Details">
+                                    <Detail label="Total Experience" value={selectedEmployer.totalexperience} />
+                                    <Detail label="Gender" value={selectedEmployer.gender} />
+                                    <Detail label="Date of Birth" value={formatDateDDMMYYYY(selectedEmployer.dob)} />
+                                    <Detail label="Nationality" value={selectedEmployer.nationality} />
+                                    <Detail label="Languages" value={selectedEmployer.language} />
+                                    <Detail label="Date of Joining" value={formatDateDDMMYYYY(selectedEmployer.doj)} />
+                                </Section>
+
+                                <Section title="Education">
+                                    <ul className="list-disc pl-5 text-sm space-y-1">
+                                        {selectedEmployer.education.map((item, index) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </Section>
+
+                                <Section title="Skills">
+                                    <ul className="list-disc pl-5 text-sm space-y-1">
+                                        {selectedEmployer.skills.map((item, index) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </Section>
+
+                                <Section title="Soft Skills">
+                                    <ul className="list-disc pl-5 text-sm space-y-1">
+                                        {selectedEmployer.softskills.map((item, index) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </Section>
+
+                                <Section title="My Accomplishments">
+                                    <ul className="list-disc pl-5 text-sm space-y-1">
+                                        {selectedEmployer.achievements.map((item, index) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </Section>
+
                             </div>
-                            <div>
-                                <strong>Skills:</strong>
-                                <ul className="list-disc pl-5">
-                                    {selectedEmployer.skills.map((item, index) => (
-                                        <li key={index}>{item}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div>
-                                <strong>Soft Skills:</strong>
-                                <ul className="list-disc pl-5">
-                                    {selectedEmployer.softskills.map((item, index) => (
-                                        <li key={index}>{item}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div>
-                                <strong>Experience:</strong>
-                                <ul className="list-disc pl-5">
-                                    {selectedEmployer.experiences.map((item, index) => (
-                                        <li key={index}>{item}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div>
-                                <strong>Projects:</strong>
-                                <ul className="list-disc pl-5">
-                                    {selectedEmployer.projects.map((item, index) => (
-                                        <li key={index}>{item}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div>
-                                <strong>My Accomplishments:</strong>
-                                <ul className="list-disc pl-5">
-                                    {selectedEmployer.achievements.map((item, index) => (
-                                        <li key={index}>{item}</li>
-                                    ))}
-                                </ul>
+
+                            {/* Right Side Sections */}
+                            <div className="flex-1 space-y-6">
+
+                                <Section title="Experience">
+                                    <ul className="list-disc pl-5 text-sm space-y-1">
+                                        {selectedEmployer.experiences.map((item, index) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </Section>
+
+                                <Section title="Projects">
+                                    <ul className="space-y-4 text-sm">
+                                        {selectedEmployer.projects.map((project, index) => (
+                                            <li key={index} className="border-l-2 border-blue-300 pl-4">
+                                                <p><strong>Name:</strong> {project.projectName}</p>
+                                                <p><strong>Client:</strong> {project.client}</p>
+                                                <p><strong>Team Size:</strong> {project.teamSize}</p>
+                                                <p><strong>Technology:</strong> {project.technology}</p>
+                                                <p><strong>Description:</strong> {project.description}</p>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </Section>
+
                             </div>
                         </div>
                     </div>
                 </div>
             )}
 
+
+
             {/* Edit Modal */}
             {editingEmployer && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center text-black">
-                    <div className="bg-white p-6 rounded-lg max-w-xl w-full overflow-y-auto max-h-[90vh]">
+                    <div className="bg-white w-[90%] max-w-2xl p-6 rounded-lg overflow-y-auto max-h-[90vh] relative">
+                        <button className="absolute top-2 right-2 text-5xl font-normal cursor-pointer" onClick={() => setEditingEmployer(null)}>×</button>
+                        <h2 className="text-xl font-bold mb-4">Edit Employer</h2>
                         <form onSubmit={handleSubmit} className="space-y-3">
-                            <div>
-                                <label className="block text-sm font-semibold">Name</label>
-                                <input type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full border rounded p-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold">Email</label>
-                                <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full border rounded p-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold">Contact</label>
-                                <input type="text" name="contact" value={formData.contact} onChange={handleInputChange} className="w-full border rounded p-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold">Position</label>
-                                <input type="text" name="position" value={formData.position} onChange={handleInputChange} className="w-full border rounded p-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold">Gender</label>
-                                <input type="text" name="gender" value={formData.gender} onChange={handleInputChange} className="w-full border rounded p-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold">Date of Birth</label>
-                                <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} className="input bg-slate-300 w-full border rounded p-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold">Nationality</label>
-                                <input type="text" name="nationality" value={formData.nationality} onChange={handleInputChange} className="w-full border rounded p-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold">Language</label>
-                                <input type="text" name="language" value={formData.language} onChange={handleInputChange} className="w-full border rounded p-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold">Date of Join</label>
-                                <input type="date" name="doj" value={formData.doj} onChange={handleInputChange} className="input bg-slate-300 w-full border rounded p-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold">Total Experience</label>
-                                <input type="text" name="totalexperience" value={formData.totalexperience} onChange={handleInputChange} className="w-full border rounded p-2" />
-                            </div>
+                            <input type="text" name="name" placeholder="Name" className="input input-bordered w-full bg-slate-200" value={formData.name} onChange={handleInputChange} required />
+                            <input type="text" name="position" placeholder="Position" className="input input-bordered w-full bg-slate-200 " value={formData.position} onChange={handleInputChange} />
+                            <input type="email" name="email" placeholder="Email" className="input input-bordered w-full bg-slate-200" value={formData.email} onChange={handleInputChange} />
+                            <input type="text" name="contact" placeholder="Contact Number" className="input input-bordered w-full bg-slate-200" value={formData.contact} onChange={handleInputChange} />
+                            <input type="text" name="gender" placeholder="Gender" className="input input-bordered w-full bg-slate-200" value={formData.gender} onChange={handleInputChange} />
+                            <label>Date of Birth</label>
+                            <input type="date" name="dob" className="input input-bordered w-full bg-slate-200" value={formData.dob} onChange={handleInputChange} />
+                            <input type="text" name="nationality" placeholder="Nationality" className="input input-bordered w-full bg-slate-200" value={formData.nationality} onChange={handleInputChange} />
+                            <input type="text" name="language" placeholder="Language Proficiency" className="input input-bordered w-full bg-slate-200" value={formData.language} onChange={handleInputChange} />
+                            <label>Date of Join</label>
+                            <input type="date" name="doj" className="input input-bordered w-full bg-slate-200" value={formData.doj} onChange={handleInputChange} />
+                            <input type="text" name="totalexperience" placeholder="Total Experience" className="input input-bordered w-full bg-slate-200" value={formData.totalexperience} onChange={handleInputChange} />
 
+                            {/* Dynamic Array Fields */}
                             {/* Education */}
                             <div>
-                                <label className="block text-sm font-semibold">Education</label>
-                                {formData.education.map((item, index) => (
-                                    <input
-                                        key={index}
-                                        type="text"
-                                        value={item}
-                                        onChange={(e) => {
-                                            const updated = [...formData.education];
-                                            updated[index] = e.target.value;
-                                            setFormData((prev) => ({ ...prev, education: updated }));
-                                        }}
-                                        className="w-full border rounded p-2 mb-2"
-                                    />
+                                <label className="font-semibold">Education</label>
+                                {formData.education.map((item, idx) => (
+                                    <div key={idx} className="flex items-center gap-2 mb-1">
+                                        <input
+                                            type="text"
+                                            className="input input-bordered w-full bg-slate-200"
+                                            value={item}
+                                            onChange={e => {
+                                                const updated = [...formData.education];
+                                                updated[idx] = e.target.value;
+                                                setFormData(prev => ({ ...prev, education: updated }));
+                                            }}
+                                        />
+                                        {formData.education.length > 1 && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-xs bg-red-600 text-white"
+                                                onClick={() => setFormData(prev => ({
+                                                    ...prev,
+                                                    education: prev.education.filter((_, i) => i !== idx)
+                                                }))}
+                                            >Remove</button>
+                                        )}
+                                    </div>
                                 ))}
                                 <button
                                     type="button"
+                                    className="btn btn-sm mt-1 bg-purple-600 text-white"
                                     onClick={() =>
-                                        setFormData((prev) => ({ ...prev, education: [...prev.education, ''] }))
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            education: [...prev.education, ""]
+                                        }))
                                     }
-                                    className="text-blue-600 text-sm"
                                 >
                                     + Add Education
                                 </button>
@@ -419,26 +494,40 @@ function EmployersList() {
 
                             {/* Skills */}
                             <div>
-                                <label className="block text-sm font-semibold">Skills</label>
-                                {formData.skills.map((item, index) => (
-                                    <input
-                                        key={index}
-                                        type="text"
-                                        value={item}
-                                        onChange={(e) => {
-                                            const updated = [...formData.skills];
-                                            updated[index] = e.target.value;
-                                            setFormData((prev) => ({ ...prev, skills: updated }));
-                                        }}
-                                        className="w-full border rounded p-2 mb-2"
-                                    />
+                                <label className="font-semibold">Skills</label>
+                                {formData.skills.map((item, idx) => (
+                                    <div key={idx} className="flex items-center gap-2 mb-1">
+                                        <input
+                                            type="text"
+                                            className="input input-bordered w-full bg-slate-200"
+                                            value={item}
+                                            onChange={e => {
+                                                const updated = [...formData.skills];
+                                                updated[idx] = e.target.value;
+                                                setFormData(prev => ({ ...prev, skills: updated }));
+                                            }}
+                                        />
+                                        {formData.skills.length > 1 && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-xs bg-red-600 text-white"
+                                                onClick={() => setFormData(prev => ({
+                                                    ...prev,
+                                                    skills: prev.skills.filter((_, i) => i !== idx)
+                                                }))}
+                                            >Remove</button>
+                                        )}
+                                    </div>
                                 ))}
                                 <button
                                     type="button"
+                                    className="btn btn-sm mt-1 bg-purple-600 text-white"
                                     onClick={() =>
-                                        setFormData((prev) => ({ ...prev, skills: [...prev.skills, ''] }))
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            skills: [...prev.skills, ""]
+                                        }))
                                     }
-                                    className="text-blue-600 text-sm"
                                 >
                                     + Add Skill
                                 </button>
@@ -446,26 +535,40 @@ function EmployersList() {
 
                             {/* Soft Skills */}
                             <div>
-                                <label className="block text-sm font-semibold">Soft Skills</label>
-                                {formData.softskills.map((item, index) => (
-                                    <input
-                                        key={index}
-                                        type="text"
-                                        value={item}
-                                        onChange={(e) => {
-                                            const updated = [...formData.softskills];
-                                            updated[index] = e.target.value;
-                                            setFormData((prev) => ({ ...prev, softskills: updated }));
-                                        }}
-                                        className="w-full border rounded p-2 mb-2"
-                                    />
+                                <label className="font-semibold">Soft Skills</label>
+                                {formData.softskills.map((item, idx) => (
+                                    <div key={idx} className="flex items-center gap-2 mb-1">
+                                        <input
+                                            type="text"
+                                            className="input input-bordered w-full bg-slate-200"
+                                            value={item}
+                                            onChange={e => {
+                                                const updated = [...formData.softskills];
+                                                updated[idx] = e.target.value;
+                                                setFormData(prev => ({ ...prev, softskills: updated }));
+                                            }}
+                                        />
+                                        {formData.softskills.length > 1 && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-xs bg-red-600 text-white"
+                                                onClick={() => setFormData(prev => ({
+                                                    ...prev,
+                                                    softskills: prev.softskills.filter((_, i) => i !== idx)
+                                                }))}
+                                            >Remove</button>
+                                        )}
+                                    </div>
                                 ))}
                                 <button
                                     type="button"
+                                    className="btn btn-sm mt-1 bg-purple-600 text-white"
                                     onClick={() =>
-                                        setFormData((prev) => ({ ...prev, softskills: [...prev.softskills, ''] }))
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            softskills: [...prev.softskills, ""]
+                                        }))
                                     }
-                                    className="text-blue-600 text-sm"
                                 >
                                     + Add Soft Skill
                                 </button>
@@ -473,97 +576,147 @@ function EmployersList() {
 
                             {/* Experiences */}
                             <div>
-                                <label className="block text-sm font-semibold">Experiences</label>
-                                {formData.experiences.map((item, index) => (
-                                    <input
-                                        key={index}
-                                        type="text"
-                                        value={item}
-                                        onChange={(e) => {
-                                            const updated = [...formData.experiences];
-                                            updated[index] = e.target.value;
-                                            setFormData((prev) => ({ ...prev, experiences: updated }));
-                                        }}
-                                        className="w-full border rounded p-2 mb-2"
-                                    />
+                                <label className="font-semibold">Experiences</label>
+                                {formData.experiences.map((item, idx) => (
+                                    <div key={idx} className="flex items-center gap-2 mb-1">
+                                        <input
+                                            type="text"
+                                            className="input input-bordered w-full bg-slate-200"
+                                            value={item}
+                                            onChange={e => {
+                                                const updated = [...formData.experiences];
+                                                updated[idx] = e.target.value;
+                                                setFormData(prev => ({ ...prev, experiences: updated }));
+                                            }}
+                                        />
+                                        {formData.experiences.length > 1 && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-xs bg-red-600 text-white"
+                                                onClick={() => setFormData(prev => ({
+                                                    ...prev,
+                                                    experiences: prev.experiences.filter((_, i) => i !== idx)
+                                                }))}
+                                            >Remove</button>
+                                        )}
+                                    </div>
                                 ))}
                                 <button
                                     type="button"
+                                    className="btn btn-sm mt-1 bg-purple-600 text-white"
                                     onClick={() =>
-                                        setFormData((prev) => ({ ...prev, experiences: [...prev.experiences, ''] }))
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            experiences: [...prev.experiences, ""]
+                                        }))
                                     }
-                                    className="text-blue-600 text-sm"
                                 >
                                     + Add Experience
                                 </button>
                             </div>
 
-                            {/* Projects */}
-                            <div>
-                                <label className="block text-sm font-semibold">Projects</label>
-                                {formData.projects.map((item, index) => (
-                                    <input
-                                        key={index}
-                                        type="text"
-                                        value={item}
-                                        onChange={(e) => {
-                                            const updated = [...formData.projects];
-                                            updated[index] = e.target.value;
-                                            setFormData((prev) => ({ ...prev, projects: updated }));
-                                        }}
-                                        className="w-full border rounded p-2 mb-2"
-                                    />
-                                ))}
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        setFormData((prev) => ({ ...prev, projects: [...prev.projects, ''] }))
-                                    }
-                                    className="text-blue-600 text-sm"
-                                >
-                                    + Add Project
-                                </button>
-                            </div>
-
                             {/* Achievements */}
                             <div>
-                                <label className="block text-sm font-semibold">My Accomplishments</label>
-                                {formData.achievements.map((item, index) => (
-                                    <input
-                                        key={index}
-                                        type="text"
-                                        value={item}
-                                        onChange={(e) => {
-                                            const updated = [...formData.achievements];
-                                            updated[index] = e.target.value;
-                                            setFormData((prev) => ({ ...prev, achievements: updated }));
-                                        }}
-                                        className="w-full border rounded p-2 mb-2"
-                                    />
+                                <label className="font-semibold">My Accomplishments</label>
+                                {formData.achievements.map((item, idx) => (
+                                    <div key={idx} className="flex items-center gap-2 mb-1">
+                                        <input
+                                            type="text"
+                                            className="input input-bordered w-full bg-slate-200"
+                                            value={item}
+                                            onChange={e => {
+                                                const updated = [...formData.achievements];
+                                                updated[idx] = e.target.value;
+                                                setFormData(prev => ({ ...prev, achievements: updated }));
+                                            }}
+                                        />
+                                        {formData.achievements.length > 1 && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-xs bg-red-600 text-white"
+                                                onClick={() => setFormData(prev => ({
+                                                    ...prev,
+                                                    achievements: prev.achievements.filter((_, i) => i !== idx)
+                                                }))}
+                                            >Remove</button>
+                                        )}
+                                    </div>
                                 ))}
                                 <button
                                     type="button"
+                                    className="btn btn-sm mt-1 bg-purple-600 text-white"
                                     onClick={() =>
-                                        setFormData((prev) => ({ ...prev, achievements: [...prev.achievements, ''] }))
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            achievements: [...prev.achievements, ""]
+                                        }))
                                     }
-                                    className="text-blue-600 text-sm"
                                 >
                                     + Add Achievement
                                 </button>
                             </div>
 
+                            {/* Projects with subfields (unchanged) */}
+                            <div>
+                                <label className="font-semibold">Projects</label>
+                                {formData.projects.map((project, index) => (
+                                    <div key={index} className="border p-3 mb-2 rounded bg-slate-50">
+                                        <input
+                                            type="text"
+                                            placeholder="Project Name"
+                                            className="input input-bordered w-full mb-1 bg-slate-200"
+                                            value={project.projectName}
+                                            onChange={e => handleProjectFieldChange(index, 'projectName', e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Client"
+                                            className="input input-bordered w-full mb-1 bg-slate-200"
+                                            value={project.client}
+                                            onChange={e => handleProjectFieldChange(index, 'client', e.target.value)}
+                                        />
+                                        <input
+                                            type="number"
+                                            placeholder="Team Size"
+                                            className="input input-bordered w-full mb-1 bg-slate-200"
+                                            value={project.teamSize}
+                                            onChange={e => handleProjectFieldChange(index, 'teamSize', e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Technology"
+                                            className="input input-bordered w-full mb-1 bg-slate-200"
+                                            value={project.technology}
+                                            onChange={e => handleProjectFieldChange(index, 'technology', e.target.value)}
+                                        />
+                                        <textarea
+                                            placeholder="Project Description"
+                                            className="input input-bordered w-full mb-1 bg-slate-200 h-40"
+                                            value={project.description}
+                                            onChange={e => handleProjectFieldChange(index, 'description', e.target.value)}
+                                        />
+                                        {formData.projects.length > 1 && (
+                                            <button type="button" className="btn btn-xs bg-red-600 text-white" onClick={() => removeProjectField(index)}>Remove</button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    className="btn btn-sm mt-2 bg-purple-600 text-white"
+                                    onClick={addProjectField}
+                                >
+                                    + Add Project
+                                </button>
+                            </div>
 
-                            {/* <div>
-                                <label className="block text-sm font-semibold">Photo</label>
-                                <input type="file" onChange={handleFileChange} className="w-full border rounded p-2" />
-                            </div> */}
+                            <label>Profile Photo</label>
+                            <input type="file" accept="image/*" className="file-input file-input-bordered w-full bg-slate-200
+                            " onChange={handleFileChange} />
 
-                            <div className="mt-4 flex justify-end gap-4">
-                                <button type="button" onClick={() => setEditingEmployer(null)} className="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
-                                {/* <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Save</button> */}
+                            <div className="flex justify-end gap-2 mt-4">
                                 <button
                                     type="submit"
-                                    className="bg-purple-600 text-white px-4 py-2 rounded flex items-center justify-center"
+                                    className="bg-purple-600 px-4 py-2 rounded text-white flex items-center justify-center"
                                     disabled={isSubmitting}
                                 >
                                     {isSubmitting ? (
@@ -588,23 +741,34 @@ function EmployersList() {
                                                     d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                                                 ></path>
                                             </svg>
-                                            Updating...
+                                            submitting...
                                         </>
                                     ) : (
-                                        'Update'
+                                        'Submit'
                                     )}
                                 </button>
-
+                                <button type="button" className="btn" onClick={() => setEditingEmployer(null)}>Close</button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
 
-            <ToastContainer />
         </div>
     );
 }
 
 export default EmployersList;
 
+
+
+const Section = ({ title, children }) => (
+    <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
+        <h3 className="text-lg font-semibold text-gray-800 mb-3">{title}</h3>
+        {children}
+    </div>
+);
+
+const Detail = ({ label, value }) => (
+    <p className="text-sm"><strong>{label}:</strong> {value}</p>
+);

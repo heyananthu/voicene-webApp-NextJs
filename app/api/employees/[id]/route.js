@@ -18,7 +18,6 @@ export async function PUT(req, { params }) {
     try {
         const formData = await req.formData();
 
-
         const name = formData.get("name");
         const email = formData.get("email");
         const contact = formData.get("contact");
@@ -34,9 +33,21 @@ export async function PUT(req, { params }) {
         const skills = formData.getAll("skills");
         const education = formData.getAll("education");
         const softskills = formData.getAll("softskills");
-        const projects = formData.getAll("projects");
         const achievements = formData.getAll("achievements");
 
+        // Parse projects JSON string into array of objects
+        let projects = [];
+        const projectsRaw = formData.get("projects");
+        if (projectsRaw) {
+            try {
+                projects = JSON.parse(projectsRaw);
+            } catch (e) {
+                return NextResponse.json(
+                    { success: false, message: "Invalid projects data format" },
+                    { status: 400 }
+                );
+            }
+        }
 
         const photo = formData.get("photo");
         let photoUrl = "";
@@ -71,8 +82,8 @@ export async function PUT(req, { params }) {
         employer.experiences = experiences ? experiences.filter(Boolean) : [];
         employer.education = education ? education.filter(Boolean) : [];
         employer.softskills = softskills ? softskills.filter(Boolean) : [];
-        employer.projects = projects ? projects.filter(Boolean) : [];
         employer.achievements = achievements ? achievements.filter(Boolean) : [];
+        employer.projects = projects; // <-- Now an array of objects
 
         if (photoUrl) {
             employer.photo = photoUrl;

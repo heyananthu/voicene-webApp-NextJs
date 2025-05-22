@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import Loading from '@/public/assets/Loading.json'
+
 function Ourteam() {
     const [data, setData] = useState([]);
     const [hasMounted, setHasMounted] = useState(false);
@@ -27,7 +28,6 @@ function Ourteam() {
                 setLoading(false);
             });
     }, []);
-
 
     if (!hasMounted) return null;
 
@@ -53,15 +53,11 @@ function Ourteam() {
                             className="cursor-pointer bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl w-80 h-80 shadow-lg hover:shadow-xl transition duration-300 p-6 flex flex-col justify-center items-center hover:scale-105"
                         >
                             <div className="flex flex-col items-center text-center space-y-2">
-                                {/* <div className="bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold text-indigo-700 shadow-inner">
-                                    {obj.name?.charAt(0)}
-                                </div> */}
                                 <h2 className="text-xl font-semibold text-gray-800">{obj.name}</h2>
                                 <p className="text-sm text-gray-500">{obj.position}</p>
                             </div>
                         </div>
                     </Animatedcard>
-
                 ))}
                 {loading && (
                     <div className="mt-4 flex items-center justify-center">
@@ -88,16 +84,12 @@ function Ourteam() {
                         >
                             <button
                                 onClick={closeModal}
-                                className="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl"
+                                className="absolute top-3 right-4 text-gray-500 hover:text-black text-5xl"
                             >
                                 &times;
                             </button>
 
-                            {/* Header with Initial Avatar */}
                             <div className="flex flex-col items-center mb-6 space-y-2">
-                                {/* <div className="w-20 h-20 rounded-full bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 flex items-center justify-center text-3xl font-bold text-white shadow-inner">
-                                    {selectedMember.name?.charAt(0)}
-                                </div> */}
                                 <h2 className="text-4xl text-center font-bold text-gray-900">{selectedMember.name}</h2>
                                 <p className="text-sm text-gray-600">{selectedMember.position}</p>
                                 {selectedMember.totalexperience && (
@@ -109,23 +101,20 @@ function Ourteam() {
 
                             {/* Resume Body */}
                             <div className="space-y-6 text-sm text-gray-800">
-                                {/* <ResumeSection title="Experience" items={selectedMember.experiences} /> */}
                                 <ResumeBadgeSectionSkills title="Technical Skills" items={selectedMember.skills} />
                                 <ResumeSection title="My Accomplishments" items={selectedMember.achievements} />
-                                <ResumeSection title="Projects" items={selectedMember.projects} />
+                                <ResumeProjectsSection title="Projects" items={selectedMember.projects} />
                             </div>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
-
-
-
         </div>
     );
 }
 
-// Utility Components
+// ========== Utility Components ==========
+
 const ResumeSection = ({ title, items }) => {
     if (!items?.length) return null;
     return (
@@ -172,6 +161,39 @@ const ResumeBadgeSectionSkills = ({ title, items }) => {
                     >
                         {item}
                     </span>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+const ResumeProjectsSection = ({ title, items }) => {
+    if (!items?.length) return null;
+    return (
+        <div>
+            <h3 className="text-lg font-semibold border-b pb-1 mb-2">{title}</h3>
+            <div className="space-y-4 mt-2">
+                {items.map((project, index) => (
+                    <div
+                        key={index}
+                        className="border border-gray-200 rounded-lg p-4 shadow-sm bg-gray-50 space-y-2"
+                    >
+                        <h4 className="text-xl font-bold text-gray-800">
+                            {project.projectName}
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                            <span className="font-semibold">Client : </span> {project.client || "N/A"}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                            <span className="font-semibold">Team Size : </span> {project.teamSize || "N/A"}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                            <span className="font-semibold">Technology : </span> {project.technology || "N/A"}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                            <span className="font-semibold">Description : </span> {project.description || "N/A"}
+                        </p>
+                    </div>
                 ))}
             </div>
         </div>

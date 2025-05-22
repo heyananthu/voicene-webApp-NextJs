@@ -10,11 +10,11 @@ import { Label } from 'flowbite-react';
 
 function Page() {
   const router = useRouter();
-  const [isDuplicate, setIsDuplicate] = useState(false)
-  const [error, setError] = useState(false)
+  const [isDuplicate, setIsDuplicate] = useState(false);
+  const [error, setError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
+  // Updated projects to be array of objects
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -23,7 +23,15 @@ function Page() {
     position: '',
     totalexperience: '',
     skills: [''],
-    projects: [''],
+    projects: [
+      {
+        projectName: '',
+        client: '',
+        teamSize: '',
+        technology: '',
+        description: ''
+      }
+    ],
     softskills: [''],
     education: [''],
     achievements: [''],
@@ -55,6 +63,7 @@ function Page() {
 
   if (!isClient) return null;
 
+  // For simple array fields
   const updateFieldArray = (type, value, index) => {
     const updated = [...form[type]];
     updated[index] = value;
@@ -65,6 +74,29 @@ function Page() {
     setForm({ ...form, [type]: [...form[type], ''] });
   };
 
+  // For project subfields
+  const updateProjectField = (index, field, value) => {
+    const updatedProjects = [...form.projects];
+    updatedProjects[index][field] = value;
+    setForm({ ...form, projects: updatedProjects });
+  };
+
+  const addProjectField = () => {
+    setForm({
+      ...form,
+      projects: [
+        ...form.projects,
+        {
+          projectName: '',
+          client: '',
+          teamSize: '',
+          technology: '',
+          description: ''
+        }
+      ]
+    });
+  };
+
   const handleFileChange = (e) => {
     setForm({ ...form, photo: e.target.files[0] });
   };
@@ -73,9 +105,14 @@ function Page() {
     e.preventDefault();
     setIsSubmitting(true);
     const filteredArrays = {};
-    ['skills', 'experiences', 'projects', 'softskills', 'education', 'achievements'].forEach((field) => {
+    ['skills', 'experiences', 'softskills', 'education', 'achievements'].forEach((field) => {
       filteredArrays[field] = form[field].map(item => item.trim()).filter(Boolean);
     });
+
+    // Filter projects: remove empty ones
+    const filteredProjects = form.projects.filter(
+      p => p.projectName.trim() || p.client.trim() || p.teamSize.trim() || p.technology.trim() || p.description.trim()
+    );
 
     const formData = new FormData();
     formData.append('name', form.name);
@@ -87,6 +124,9 @@ function Page() {
     Object.entries(filteredArrays).forEach(([field, arr]) => {
       arr.forEach(item => formData.append(field, item));
     });
+
+    // Send projects as JSON string
+    formData.append('projects', JSON.stringify(filteredProjects));
 
     formData.append('gender', form.gender);
     formData.append('nationality', form.nationality);
@@ -121,7 +161,15 @@ function Page() {
           position: '',
           totalexperience: '',
           skills: [''],
-          projects: [''],
+          projects: [
+            {
+              projectName: '',
+              client: '',
+              teamSize: '',
+              technology: '',
+              description: ''
+            }
+          ],
           softskills: [''],
           education: [''],
           achievements: [''],
@@ -135,7 +183,7 @@ function Page() {
       }
     } catch (err) {
       if (err.response && err.response.status === 409) {
-        setIsDuplicate(true)
+        setIsDuplicate(true);
 
         toast.error('Details Already Exist', {
           position: 'top-center',
@@ -143,7 +191,7 @@ function Page() {
           transition: Bounce,
         });
       } else {
-        setError(true)
+        setError(true);
         toast.error('Error submitting form', {
           position: 'top-center',
           theme: 'colored',
@@ -174,7 +222,6 @@ function Page() {
           Create +
         </button>
       </div>
-
       <EmployersList />
 
       <dialog id="my_modal_1" className="modal z-[50]">
@@ -203,12 +250,10 @@ function Page() {
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
-            />{
-              isDuplicate && (
-                <p className='text-rose-600'>Email Already Exist</p>
-              )
-            }
-            <p></p>
+            />
+            {isDuplicate && (
+              <p className='text-rose-600'>Email Already Exist</p>
+            )}
             <input
               type="text"
               placeholder="Contact Number"
@@ -223,7 +268,6 @@ function Page() {
               className="input input-bordered w-full bg-slate-50"
               value={form.gender}
               onChange={(e) => setForm({ ...form, gender: e.target.value })}
-
             />
             <label>Date of Birth</label><br />
             <input
@@ -232,7 +276,6 @@ function Page() {
               placeholder="Date of Birth"
               value={form.dob}
               onChange={(e) => setForm({ ...form, dob: e.target.value })}
-
             />
             <input
               type="text"
@@ -240,7 +283,6 @@ function Page() {
               className="input input-bordered w-full bg-slate-50"
               value={form.nationality}
               onChange={(e) => setForm({ ...form, nationality: e.target.value })}
-
             />
             <input
               type="text"
@@ -265,8 +307,8 @@ function Page() {
               onChange={(e) => setForm({ ...form, totalexperience: e.target.value })}
             />
 
-            {/* Dynamic fields */}
-            {['education', 'skills', 'softskills', 'experiences', 'projects', 'achievements'].map((field) => (
+            {/* Dynamic fields (except projects) */}
+            {['education', 'skills', 'softskills', 'experiences', 'achievements'].map((field) => (
               <div key={field}>
                 <label className="font-semibold capitalize">{field}</label>
                 {form[field].map((item, index) => (
@@ -288,6 +330,58 @@ function Page() {
                 </button>
               </div>
             ))}
+
+            {/* Projects with subfields */}
+            <div>
+              <label className="font-semibold">Projects</label>
+              {form.projects.map((project, index) => (
+                <div key={index} className="border p-3 mb-2 rounded bg-slate-50">
+                  <input
+                    type="text"
+                    placeholder="Project Name"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.projectName}
+                    onChange={e => updateProjectField(index, 'projectName', e.target.value)}
+                    required
+                  />
+                  <input
+                    type="text"
+                    placeholder="Client"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.client}
+                    onChange={e => updateProjectField(index, 'client', e.target.value)}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Team Size"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.teamSize}
+                    onChange={e => updateProjectField(index, 'teamSize', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Technology"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.technology}
+                    onChange={e => updateProjectField(index, 'technology', e.target.value)}
+                  />
+                  <textarea
+                    placeholder="Project Description"
+                    className="input input-bordered w-full h-44 mb-1 bg-slate-300"
+                    value={project.description}
+                    onChange={e => updateProjectField(index, 'description', e.target.value)}
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-sm mt-2 bg-purple-600 text-white"
+                onClick={addProjectField}
+              >
+                + Add Project
+              </button>
+            </div>
+
             <label>Profile</label>
             <input
               type="file"
@@ -296,12 +390,9 @@ function Page() {
               placeholder='Profile'
               onChange={handleFileChange}
             />
-            {
-              error && (
-                <p className='text-red-700 text-center p-4'>Error submitting form , please try Again</p>
-              )
-            }
-
+            {error && (
+              <p className='text-red-700 text-center p-4'>Error submitting form, please try Again</p>
+            )}
             <div className="modal-action">
               <button
                 type="submit"
