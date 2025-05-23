@@ -181,18 +181,27 @@ const ResumeProjectsSection = ({ title, items }) => {
                         <h4 className="text-xl font-bold text-gray-800">
                             {project.projectName}
                         </h4>
-                        <p className="text-sm text-gray-600">
-                            <span className="font-semibold">Client : </span> {project.client || "N/A"}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            <span className="font-semibold">Team Size : </span> {project.teamSize || "N/A"}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            <span className="font-semibold">Technology : </span> {project.technology || "N/A"}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-1">
-                            <span className="font-semibold">Description : </span> {project.description || "N/A"}
-                        </p>
+                        {project.client && (
+                            <p className="text-sm text-gray-600">
+                                <span className="font-semibold">Client : </span> {project.client}
+                            </p>
+                        )}
+                        {project.teamSize && (
+                            <p className="text-sm text-gray-600">
+                                <span className="font-semibold">Team Size : </span> {project.teamSize}
+                            </p>
+                        )}
+                        {project.technology && (
+                            <p className="text-sm text-gray-600">
+                                <span className="font-semibold">Technology : </span> {project.technology}
+                            </p>
+                        )}
+                        {project.description && (
+                            <p className="text-sm text-gray-600 mt-1">
+                                <span className="font-semibold">Description : </span> {project.description}
+                            </p>
+                        )}
+
                     </div>
                 ))}
             </div>

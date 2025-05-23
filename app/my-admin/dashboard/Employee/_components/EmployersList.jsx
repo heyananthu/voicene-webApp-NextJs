@@ -13,8 +13,11 @@ const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import Loading from '@/public/assets/Loading.json';
 import Error from '@/public/assets/error.json';
 
-function EmployersList() {
-    const [employers, setEmployers] = useState([]);
+function EmployersList({ employers, setEmployers }) {
+    if (!employers || employers.length === 0) {
+        return <p className="text-center text-gray-500">No employers found.</p>;
+    }
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [selectedEmployer, setSelectedEmployer] = useState(null);
@@ -42,27 +45,27 @@ function EmployersList() {
         if (adminStatus !== 'authenticated') router.push('/my-admin');
     }, [router]);
 
-    useEffect(() => {
-        setLoading(true);
-        const fetchEmployers = async () => {
-            try {
-                const res = await axios.get('/api/employees');
-                if (res.status === 200) setEmployers(res.data.employers);
-            } catch (error) {
-                setError(true);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchEmployers();
-    }, []);
+    // useEffect(() => {
+    //     setLoading(true);
+    //     const fetchEmployers = async () => {
+    //         try {
+    //             const res = await axios.get('/api/employees');
+    //             if (res.status === 200) setEmployers(res.data.employers);
+    //         } catch (error) {
+    //             setError(true);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     fetchEmployers();
+    // }, []);
 
     const handleDelete = async (id) => {
         setDeletingId(id);
         try {
             const res = await axios.delete(`/api/employees/${id}`);
             if (res.status === 200) {
-                toast.success('Details Deleted...', { position: 'top-center', theme: 'colored', transition: Bounce });
+                toast.success('Details Deleted...');
                 setEmployers((prev) => prev.filter((emp) => emp._id !== id));
             }
         } catch (error) {
@@ -262,7 +265,6 @@ function EmployersList() {
 
     return (
         <div className="p-6 bg-white min-h-screen">
-            <ToastContainer />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {employers?.map((emp) => (
                     <div key={emp?._id || emp?.name || emp?.position || Math.random()} className="bg-gray-100 shadow-md rounded-lg p-4 cursor-pointer hover:shadow-xl transition"
@@ -365,7 +367,7 @@ function EmployersList() {
 
                                 <Section title="Education">
                                     <ul className="list-disc pl-5 text-sm space-y-1">
-                                        {selectedEmployer.education.map((item, index) => (
+                                        {Array.isArray(selectedEmployer.education) && selectedEmployer.education.map((item, index) => (
                                             <li key={index}>{item}</li>
                                         ))}
                                     </ul>
@@ -373,7 +375,7 @@ function EmployersList() {
 
                                 <Section title="Skills">
                                     <ul className="list-disc pl-5 text-sm space-y-1">
-                                        {selectedEmployer.skills.map((item, index) => (
+                                        {Array.isArray(selectedEmployer.skills) && selectedEmployer.skills.map((item, index) => (
                                             <li key={index}>{item}</li>
                                         ))}
                                     </ul>
@@ -381,7 +383,7 @@ function EmployersList() {
 
                                 <Section title="Soft Skills">
                                     <ul className="list-disc pl-5 text-sm space-y-1">
-                                        {selectedEmployer.softskills.map((item, index) => (
+                                        {Array.isArray(selectedEmployer.softskills) && selectedEmployer.softskills.map((item, index) => (
                                             <li key={index}>{item}</li>
                                         ))}
                                     </ul>
@@ -389,7 +391,7 @@ function EmployersList() {
 
                                 <Section title="My Accomplishments">
                                     <ul className="list-disc pl-5 text-sm space-y-1">
-                                        {selectedEmployer.achievements.map((item, index) => (
+                                        {Array.isArray(selectedEmployer.achievements) && selectedEmployer.achievements.map((item, index) => (
                                             <li key={index}>{item}</li>
                                         ))}
                                     </ul>
@@ -402,7 +404,7 @@ function EmployersList() {
 
                                 <Section title="Experience">
                                     <ul className="list-disc pl-5 text-sm space-y-1">
-                                        {selectedEmployer.experiences.map((item, index) => (
+                                        {Array.isArray(selectedEmployer.experiences) && selectedEmployer.experiences.map((item, index) => (
                                             <li key={index}>{item}</li>
                                         ))}
                                     </ul>
@@ -410,7 +412,7 @@ function EmployersList() {
 
                                 <Section title="Projects">
                                     <ul className="space-y-4 text-sm">
-                                        {selectedEmployer.projects.map((project, index) => (
+                                        {Array.isArray(selectedEmployer.projects) && selectedEmployer.projects.map((project, index) => (
                                             <li key={index} className="border-l-2 border-blue-300 pl-4">
                                                 <p><strong>Name:</strong> {project.projectName}</p>
                                                 <p><strong>Client:</strong> {project.client}</p>

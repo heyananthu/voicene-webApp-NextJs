@@ -13,6 +13,8 @@ function Page() {
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [error, setError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [employers, setEmployers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Updated projects to be array of objects
   const [form, setForm] = useState({
@@ -44,6 +46,24 @@ function Page() {
   });
 
   const [isClient, setIsClient] = useState(false);
+
+  // ✅ Fetch employers
+  const fetchEmployers = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get('/api/employees');
+      if (res.status === 200) setEmployers(res.data.employers);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Initial fetch
+  useEffect(() => {
+    fetchEmployers();
+  }, []);
 
   useEffect(() => {
     setIsClient(true);
@@ -144,12 +164,10 @@ function Page() {
       });
 
       if (response.status === 201) {
-        toast.success('New Details Added', {
-          position: 'top-center',
-          autoClose: 5000,
-          theme: 'colored',
-          transition: Bounce,
-        });
+        toast.success('New Details Added');
+        await fetchEmployers();
+        // setEmployers(prev => [...prev, response.data.newEmployer || response.data]);
+
         setIsSubmitting(false);
         document.getElementById('my_modal_1').close();
 
@@ -209,10 +227,14 @@ function Page() {
       <ToastContainer
         position="top-center"
         autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        draggable
         transition={Bounce}
         theme="colored"
-        toastClassName="!z-[9999]" // Ensures toast is above all other elements (including modal)
+        toastClassName="!z-[9999]"
       />
+
 
       <div className="flex justify-end mb-4">
         <button
@@ -222,7 +244,8 @@ function Page() {
           Create +
         </button>
       </div>
-      <EmployersList />
+
+      <EmployersList employers={employers} setEmployers={setEmployers} />
 
       <dialog id="my_modal_1" className="modal z-[50]">
         <div className="modal-box bg-gray-200 max-w-xl">
@@ -241,7 +264,7 @@ function Page() {
               className="input input-bordered w-full bg-slate-50"
               value={form.position}
               onChange={(e) => setForm({ ...form, position: e.target.value })}
-              required
+
             />
             <input
               type="email"
@@ -260,7 +283,7 @@ function Page() {
               className="input input-bordered w-full bg-slate-50"
               value={form.contact}
               onChange={(e) => setForm({ ...form, contact: e.target.value })}
-              required
+
             />
             <input
               type="text"
@@ -342,7 +365,7 @@ function Page() {
                     className="input input-bordered w-full mb-1 bg-slate-300"
                     value={project.projectName}
                     onChange={e => updateProjectField(index, 'projectName', e.target.value)}
-                    required
+
                   />
                   <input
                     type="text"
@@ -365,9 +388,10 @@ function Page() {
                     value={project.technology}
                     onChange={e => updateProjectField(index, 'technology', e.target.value)}
                   />
+
                   <textarea
                     placeholder="Project Description"
-                    className="input input-bordered w-full h-44 mb-1 bg-slate-300"
+                    className="input input-bordered w-full h-44 mb-1 bg-slate-300 p-1"
                     value={project.description}
                     onChange={e => updateProjectField(index, 'description', e.target.value)}
                   />
