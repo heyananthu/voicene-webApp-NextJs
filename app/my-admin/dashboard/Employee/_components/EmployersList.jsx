@@ -12,14 +12,17 @@ import dynamic from "next/dynamic";
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import Loading from '@/public/assets/Loading.json';
 import Error from '@/public/assets/error.json';
+import Nodataanim from '@/public/assets/nodataanim.json'
 
-function EmployersList({ employers, setEmployers }) {
+function EmployersList({ employers, setEmployers, loading, error }) {
+    if (loading) return <div className="flex justify-center"><Lottie animationData={Loading} className='w-[45rem] h-[15rem]' /></div>;
+    if (error) return <div className="flex justify-center"><Lottie animationData={Error} className='w-[45rem] h-[15rem]' /></div>;
+
+
     if (!employers || employers.length === 0) {
-        return <p className="text-center text-gray-500">No employers found.</p>;
+        return <div className="flex justify-center"><Lottie animationData={Nodataanim} className='w-[50rem] h-[20rem]' /></div>;;
     }
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
     const [selectedEmployer, setSelectedEmployer] = useState(null);
     const [editingEmployer, setEditingEmployer] = useState(null);
     const [deletingId, setDeletingId] = useState(null);
@@ -260,8 +263,6 @@ function EmployersList({ employers, setEmployers }) {
         setPhoto(e.target.files[0]);
     };
 
-    if (loading) return <div className="flex justify-center"><Lottie animationData={Loading} className='w-[45rem] h-[15rem]' /></div>;
-    if (error) return <div className="flex justify-center"><Lottie animationData={Error} className='w-[45rem] h-[15rem]' /></div>;
 
     return (
         <div className="p-6 bg-white min-h-screen">

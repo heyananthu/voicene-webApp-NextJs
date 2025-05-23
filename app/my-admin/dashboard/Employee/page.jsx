@@ -15,6 +15,7 @@ function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [employers, setEmployers] = useState([]);
   const [loading, setLoading] = useState(false);
+  
 
   // Updated projects to be array of objects
   const [form, setForm] = useState({
@@ -245,7 +246,7 @@ function Page() {
         </button>
       </div>
 
-      <EmployersList employers={employers} setEmployers={setEmployers} />
+      <EmployersList employers={employers} setEmployers={setEmployers} loading={loading} error={error} />
 
       <dialog id="my_modal_1" className="modal z-[50]">
         <div className="modal-box bg-gray-200 max-w-xl">
