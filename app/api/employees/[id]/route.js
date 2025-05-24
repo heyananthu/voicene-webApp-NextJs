@@ -11,6 +11,10 @@ export const config = {
     },
 };
 
+function parseDate(value) {
+    return value && value.trim() !== "" ? new Date(value) : undefined;
+}
+
 export async function PUT(req, { params }) {
     await connectDB();
     const id = params.id;
@@ -29,11 +33,38 @@ export async function PUT(req, { params }) {
         const language = formData.get("language");
         const doj = formData.get("doj");
 
-        const experiences = formData.getAll("experiences");
+        // Array fields (arrays of strings)
         const skills = formData.getAll("skills");
-        const education = formData.getAll("education");
         const softskills = formData.getAll("softskills");
         const achievements = formData.getAll("achievements");
+
+        // Parse education JSON string into array of objects
+        let education = [];
+        const educationRaw = formData.get("education");
+        if (educationRaw) {
+            try {
+                education = JSON.parse(educationRaw);
+            } catch (e) {
+                return NextResponse.json(
+                    { success: false, message: "Invalid education data format" },
+                    { status: 400 }
+                );
+            }
+        }
+
+        // Parse experiences JSON string into array of objects
+        let experiences = [];
+        const experiencesRaw = formData.get("experiences");
+        if (experiencesRaw) {
+            try {
+                experiences = JSON.parse(experiencesRaw);
+            } catch (e) {
+                return NextResponse.json(
+                    { success: false, message: "Invalid experiences data format" },
+                    { status: 400 }
+                );
+            }
+        }
 
         // Parse projects JSON string into array of objects
         let projects = [];
@@ -49,6 +80,7 @@ export async function PUT(req, { params }) {
             }
         }
 
+        // File handling (photo)
         const photo = formData.get("photo");
         let photoUrl = "";
 
@@ -71,19 +103,19 @@ export async function PUT(req, { params }) {
         employer.contact = contact !== null ? contact : employer.contact;
         employer.position = position !== null ? position : employer.position;
         employer.totalexperience = totalexperience !== null ? totalexperience : employer.totalexperience;
-        employer.dob = dob !== null ? dob : employer.dob;
+        employer.dob = dob !== null ? parseDate(dob) : employer.dob;
         employer.gender = gender !== null ? gender : employer.gender;
         employer.nationality = nationality !== null ? nationality : employer.nationality;
         employer.language = language !== null ? language : employer.language;
-        employer.doj = doj !== null ? doj : employer.doj;
+        employer.doj = doj !== null ? parseDate(doj) : employer.doj;
 
-        // For arrays, filter out empty strings and set to [] if empty
         employer.skills = skills ? skills.filter(Boolean) : [];
-        employer.experiences = experiences ? experiences.filter(Boolean) : [];
-        employer.education = education ? education.filter(Boolean) : [];
         employer.softskills = softskills ? softskills.filter(Boolean) : [];
         employer.achievements = achievements ? achievements.filter(Boolean) : [];
-        employer.projects = projects; // <-- Now an array of objects
+
+        employer.education = education;
+        employer.experiences = experiences;
+        employer.projects = projects;
 
         if (photoUrl) {
             employer.photo = photoUrl;

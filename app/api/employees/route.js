@@ -36,6 +36,10 @@ function runMiddleware(req, res, fn) {
 
 // POST: Create a new employer
 
+function parseDate(value) {
+    return value && value.trim() !== "" ? new Date(value) : undefined;
+}
+
 export async function POST(req) {
     await connectDB();
 
@@ -54,11 +58,9 @@ export async function POST(req) {
         const language = formData.get("language");
         const doj = formData.get("doj");
 
-        // Array fields
-        const experiences = formData.getAll("experiences") || [];
+        // Array fields (still arrays of strings)
         const skills = formData.getAll("skills") || [];
         const softskills = formData.getAll("softskills") || [];
-        const education = formData.getAll("education") || [];
         const achievements = formData.getAll("achievements") || [];
 
         // Parse projects JSON string into array of objects
@@ -70,6 +72,34 @@ export async function POST(req) {
             } catch (e) {
                 return NextResponse.json(
                     { success: false, message: "Invalid projects data format" },
+                    { status: 400 }
+                );
+            }
+        }
+
+        // Parse education JSON string into array of objects
+        let education = [];
+        const educationRaw = formData.get("education");
+        if (educationRaw) {
+            try {
+                education = JSON.parse(educationRaw);
+            } catch (e) {
+                return NextResponse.json(
+                    { success: false, message: "Invalid education data format" },
+                    { status: 400 }
+                );
+            }
+        }
+
+        // Parse experiences JSON string into array of objects
+        let experiences = [];
+        const experiencesRaw = formData.get("experiences");
+        if (experiencesRaw) {
+            try {
+                experiences = JSON.parse(experiencesRaw);
+            } catch (e) {
+                return NextResponse.json(
+                    { success: false, message: "Invalid experiences data format" },
                     { status: 400 }
                 );
             }
@@ -95,23 +125,18 @@ export async function POST(req) {
             photoUrl = fileName;
         }
 
-        // Helper to safely parse date or return undefined
-        function parseDate(value) {
-            return value && value.trim() !== "" ? new Date(value) : undefined;
-        }
-
         // Create and save employer
         const employer = new Employer({
             name,
             email,
             contact,
-            experiences,
+            experiences, // now an array of objects
             position,
             totalexperience,
             skills,
-            projects, // now an array of objects
+            projects, // array of objects
             softskills,
-            education,
+            education, // now an array of objects
             achievements,
             gender,
             nationality,
@@ -152,7 +177,6 @@ export async function POST(req) {
         );
     }
 }
-
 
 
 

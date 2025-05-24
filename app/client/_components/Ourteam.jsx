@@ -7,6 +7,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import defaultavatar from '@/public/assets/defaultavatar.png'
 import dynamic from "next/dynamic";
+import { BadgeCheck, Award, FolderKanban } from "lucide-react";
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import Loading from '@/public/assets/Loading.json'
@@ -76,34 +77,114 @@ function Ourteam() {
                         exit={{ opacity: 0 }}
                     >
                         <motion.div
-                            className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative font-sans"
+                            className="bg-white rounded-2xl shadow-2xl p-6 md:p-10 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative font-sans"
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
                             transition={{ duration: 0.3, ease: "easeOut" }}
                         >
+                            {/* Close Button */}
                             <button
                                 onClick={closeModal}
-                                className="absolute top-3 right-4 text-gray-500 hover:text-black text-5xl"
+                                className="absolute top-3 right-4 text-gray-500 hover:text-black text-4xl font-light"
                             >
                                 &times;
                             </button>
 
-                            <div className="flex flex-col items-center mb-6 space-y-2">
-                                <h2 className="text-4xl text-center font-bold text-gray-900">{selectedMember.name}</h2>
-                                <p className="text-sm text-gray-600">{selectedMember.position}</p>
+                            {/* Header */}
+                            <div className="text-center mb-6 space-y-1">
+                                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{selectedMember.name}</h2>
+                                <p className="text-base text-gray-600">{selectedMember.position}</p>
                                 {selectedMember.totalexperience && (
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-500">
                                         Total Experience: {selectedMember.totalexperience}
                                     </p>
                                 )}
                             </div>
 
-                            {/* Resume Body */}
-                            <div className="space-y-6 text-sm text-gray-800">
-                                <ResumeBadgeSectionSkills title="Technical Skills" items={selectedMember.skills} />
-                                <ResumeSection title="My Accomplishments" items={selectedMember.achievements} />
-                                <ResumeProjectsSection title="Projects" items={selectedMember.projects} />
+                            {/* Resume Sections */}
+                            <div className="space-y-8 text-sm text-gray-800">
+                                {/* Technical Skills */}
+                                {selectedMember.skills?.length > 0 && (
+                                    <div>
+                                        <SectionTitle icon={<BadgeCheck className="w-5 h-5 mr-2" />} title="Technical Skills" />
+                                        <ul className="flex flex-wrap gap-2 mt-2">
+                                            {selectedMember.skills.map((skill, i) => (
+                                                <li key={i} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                                                    {skill}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+                                {/* Achievements */}
+                                {selectedMember.achievements?.length > 0 && (
+                                    <div>
+                                        <SectionTitle icon={<Award className="w-5 h-5 mr-2" />} title="My Accomplishments" />
+                                        <ul className="list-disc ml-6 mt-2 space-y-1">
+                                            {selectedMember.achievements.map((item, i) => (
+                                                <li key={i}>{item}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+                                {/* Projects */}
+                                {selectedMember.projects?.length > 0 && (
+                                    <div>
+                                        <SectionTitle icon={<FolderKanban className="w-5 h-5 mr-2" />} title="Projects" />
+                                        <div className="space-y-4 mt-2">
+                                            {selectedMember.projects.map((proj, i) => (
+                                                <div key={i} className="border p-4 rounded-xl shadow-sm bg-gray-50 space-y-1">
+                                                    {/* Project Name with Serial No */}
+                                                    {proj.projectName && (
+                                                        <div className="font-semibold">
+                                                            {i + 1}. {proj.projectName}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Client */}
+                                                    {proj.client && (
+                                                        <div className="text-sm mt-1">
+                                                            <b>Client:</b> {proj.client}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Team Size */}
+                                                    {proj.teamSize && (
+                                                        <div className="text-sm">
+                                                            <b>Team Size:</b> {proj.teamSize}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Technology */}
+                                                    {proj.technology && (
+                                                        <div className="text-sm">
+                                                            <b>Technology:</b> {proj.technology}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Description */}
+                                                    {proj.description && (
+                                                        <div className="text-sm ">
+                                                            <b>Description</b>
+                                                            <ul className="list-disc ml-6 mt-1">
+                                                                {Array.isArray(proj.description)
+                                                                    ? proj.description.map((desc, idx) => (
+                                                                        desc && <li key={idx}>{desc}</li>
+                                                                    ))
+                                                                    : <li>{proj.description}</li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
                             </div>
                         </motion.div>
                     </motion.div>
@@ -196,12 +277,16 @@ const ResumeProjectsSection = ({ title, items }) => {
                                 <span className="font-semibold">Technology : </span> {project.technology}
                             </p>
                         )}
-                        {project.description && (
-                            <p className="text-sm text-gray-600 mt-1">
-                                <span className="font-semibold">Description : </span> {project.description}
-                            </p>
+                        {Array.isArray(project.description) && project.description.length > 0 && (
+                            <div className="text-sm text-gray-600 mt-1">
+                                <span className="font-semibold">Description  </span>
+                                <ul className="list-disc ml-6">
+                                    {project.description.map((desc, idx) =>
+                                        desc ? <li key={idx}>{desc}</li> : null
+                                    )}
+                                </ul>
+                            </div>
                         )}
-
                     </div>
                 ))}
             </div>
@@ -209,4 +294,12 @@ const ResumeProjectsSection = ({ title, items }) => {
     );
 };
 
+function SectionTitle({ icon, title }) {
+    return (
+        <div className="flex items-center text-lg font-semibold text-gray-800 border-b pb-1 mb-2">
+            {icon}
+            {title}
+        </div>
+    );
+}
 export default Ourteam;

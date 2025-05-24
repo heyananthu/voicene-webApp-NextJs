@@ -12,15 +12,14 @@ import dynamic from "next/dynamic";
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import Loading from '@/public/assets/Loading.json';
 import Error from '@/public/assets/error.json';
-import Nodataanim from '@/public/assets/nodataanim.json'
+import Nodataanim from '@/public/assets/nodataanim.json';
 
 function EmployersList({ employers, setEmployers, loading, error }) {
     if (loading) return <div className="flex justify-center"><Lottie animationData={Loading} className='w-[45rem] h-[15rem]' /></div>;
     if (error) return <div className="flex justify-center"><Lottie animationData={Error} className='w-[45rem] h-[15rem]' /></div>;
 
-
     if (!employers || employers.length === 0) {
-        return <div className="flex justify-center"><Lottie animationData={Nodataanim} className='w-[50rem] h-[20rem]' /></div>;;
+        return <div className="flex justify-center"><Lottie animationData={Nodataanim} className='w-[50rem] h-[20rem]' /></div>;
     }
 
     const [selectedEmployer, setSelectedEmployer] = useState(null);
@@ -28,18 +27,22 @@ function EmployersList({ employers, setEmployers, loading, error }) {
     const [deletingId, setDeletingId] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Projects is now an array of objects
     const [formData, setFormData] = useState({
         name: '', email: '', contact: '', position: '', totalexperience: '', gender: '', dob: '', doj: '', nationality: '', language: '',
-        education: [''], skills: [''], softskills: [''], experiences: [''], projects: [{
+        education: [{ school: '', course: '', year: '' }],
+        skills: [''],
+        softskills: [''],
+        experiences: [{ company: '', jobRole: '', jobDescription: '' }],
+        projects: [{
             projectName: '',
             client: '',
             teamSize: '',
             technology: '',
-            description: ''
-        }], achievements: ['']
+            description: ['']
+        }],
+        achievements: ['']
     });
-    const [photo, setPhoto] = useState(null); // state for file input
+    const [photo, setPhoto] = useState(null);
 
     const router = useRouter();
 
@@ -47,21 +50,6 @@ function EmployersList({ employers, setEmployers, loading, error }) {
         const adminStatus = localStorage.getItem('admin');
         if (adminStatus !== 'authenticated') router.push('/my-admin');
     }, [router]);
-
-    // useEffect(() => {
-    //     setLoading(true);
-    //     const fetchEmployers = async () => {
-    //         try {
-    //             const res = await axios.get('/api/employees');
-    //             if (res.status === 200) setEmployers(res.data.employers);
-    //         } catch (error) {
-    //             setError(true);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     fetchEmployers();
-    // }, []);
 
     const handleDelete = async (id) => {
         setDeletingId(id);
@@ -91,35 +79,82 @@ function EmployersList({ employers, setEmployers, loading, error }) {
             ...emp,
             dob: formatDate(emp.dob),
             doj: formatDate(emp.doj),
-            education: emp.education && emp.education.length ? emp.education : [''],
-            skills: emp.skills && emp.skills.length ? emp.skills : [''],
-            softskills: emp.softskills && emp.softskills.length ? emp.softskills : [''],
-            experiences: emp.experiences && emp.experiences.length ? emp.experiences : [''],
-            projects:
-                Array.isArray(emp.projects) && typeof emp.projects[0] === 'object'
-                    ? emp.projects
-                    : [{
-                        projectName: '',
-                        client: '',
-                        teamSize: '',
-                        technology: '',
-                        description: ''
-                    }],
-            achievements: emp.achievements && emp.achievements.length ? emp.achievements : [''],
+            education: Array.isArray(emp.education) && emp.education.length
+                ? emp.education
+                : [{ school: '', course: '', year: '' }],
+            skills: Array.isArray(emp.skills) && emp.skills.length ? emp.skills : [''],
+            softskills: Array.isArray(emp.softskills) && emp.softskills.length ? emp.softskills : [''],
+            experiences: Array.isArray(emp.experiences) && emp.experiences.length
+                ? emp.experiences
+                : [{ company: '', jobRole: '', jobDescription: '' }],
+            projects: Array.isArray(emp.projects) && emp.projects.length
+                ? emp.projects.map(proj => ({
+                    ...proj,
+                    description: Array.isArray(proj.description) ? proj.description : ['']
+                }))
+                : [{
+                    projectName: '',
+                    client: '',
+                    teamSize: '',
+                    technology: '',
+                    description: ['']
+                }],
+            achievements: Array.isArray(emp.achievements) && emp.achievements.length ? emp.achievements : [''],
         });
     };
 
-    // For project subfields
+    // Education handlers
+    const handleEducationChange = (index, field, value) => {
+        setFormData(prev => {
+            const updated = [...prev.education];
+            updated[index][field] = value;
+            return { ...prev, education: updated };
+        });
+    };
+    const addEducationField = () => {
+        setFormData(prev => ({
+            ...prev,
+            education: [...prev.education, { school: '', course: '', year: '' }]
+        }));
+    };
+    const removeEducationField = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            education: prev.education.filter((_, i) => i !== index)
+        }));
+    };
+
+    // Experience handlers
+    const handleExperienceChange = (index, field, value) => {
+        setFormData(prev => {
+            const updated = [...prev.experiences];
+            updated[index][field] = value;
+            return { ...prev, experiences: updated };
+        });
+    };
+    const addExperienceField = () => {
+        setFormData(prev => ({
+            ...prev,
+            experiences: [...prev.experiences, { company: '', jobRole: '', jobDescription: '' }]
+        }));
+    };
+    const removeExperienceField = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            experiences: prev.experiences.filter((_, i) => i !== index)
+        }));
+    };
+
+    // Projects handlers
     const handleProjectFieldChange = (index, field, value) => {
-        setFormData((prev) => {
-            const updatedProjects = [...prev.projects];
-            updatedProjects[index][field] = value;
-            return { ...prev, projects: updatedProjects };
+        setFormData(prev => {
+            const updated = [...prev.projects];
+            updated[index][field] = value;
+            return { ...prev, projects: updated };
         });
     };
-
     const addProjectField = () => {
-        setFormData((prev) => ({
+        setFormData(prev => ({
             ...prev,
             projects: [
                 ...prev.projects,
@@ -128,17 +163,79 @@ function EmployersList({ employers, setEmployers, loading, error }) {
                     client: '',
                     teamSize: '',
                     technology: '',
-                    description: ''
+                    description: ['']
                 }
             ]
         }));
     };
-
     const removeProjectField = (index) => {
-        setFormData((prev) => ({
+        const newProjects = [...formData.projects];
+        newProjects.splice(index, 1);
+        setFormData({ ...formData, projects: newProjects });
+    };
+
+
+    // Project description handlers
+    const handleProjectDescriptionChange = (projectIndex, descIndex, value) => {
+        setFormData(prev => {
+            const updatedProjects = [...prev.projects];
+            updatedProjects[projectIndex].description[descIndex] = value;
+            return { ...prev, projects: updatedProjects };
+        });
+    };
+    const addDescriptionPoint = (projectIndex) => {
+        setFormData(prev => {
+            const updatedProjects = [...prev.projects];
+            updatedProjects[projectIndex].description.push('');
+            return { ...prev, projects: updatedProjects };
+        });
+    };
+    const removeDescriptionPoint = (projectIndex, descIndex) => {
+        setFormData(prev => {
+            const updatedProjects = [...prev.projects];
+            updatedProjects[projectIndex].description.splice(descIndex, 1);
+            return { ...prev, projects: updatedProjects };
+        });
+    };
+
+    // Skills, softskills, achievements handlers
+    const handleArrayChange = (field, index, value) => {
+        setFormData(prev => {
+            const updated = [...prev[field]];
+            updated[index] = value;
+            return { ...prev, [field]: updated };
+        });
+    };
+    const addArrayField = (field) => {
+        setFormData(prev => ({
             ...prev,
-            projects: prev.projects.filter((_, i) => i !== index)
+            [field]: [...prev[field], '']
         }));
+    };
+    const removeArrayField = (field, index) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: prev[field].filter((_, i) => i !== index)
+        }));
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    function formatDateDDMMYYYY(date) {
+        if (!date) return '';
+        const d = new Date(date);
+        if (isNaN(d)) return '';
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    const handleFileChange = (e) => {
+        setPhoto(e.target.files[0]);
     };
 
     const handleSubmit = async (e) => {
@@ -146,25 +243,15 @@ function EmployersList({ employers, setEmployers, loading, error }) {
         setIsSubmitting(true);
         const formDataToSubmit = new FormData();
 
-        // Loop through formData object and append each field to FormData
         for (const [key, value] of Object.entries(formData)) {
-            if (key === 'projects') {
-                // Serialize projects as JSON string
-                formDataToSubmit.append('projects', JSON.stringify(value));
+            if (key === 'projects' || key === 'education' || key === 'experiences') {
+                formDataToSubmit.append(key, JSON.stringify(value));
             } else if (Array.isArray(value)) {
-                if (value.length === 0) {
-                    formDataToSubmit.append(key, '');
-                } else {
-                    value.forEach((item) => {
-                        formDataToSubmit.append(key, item.trim());
-                    });
-                }
+                value.forEach(item => formDataToSubmit.append(key, item));
             } else {
-                formDataToSubmit.append(key, typeof value === 'string' ? value.trim() : value);
+                formDataToSubmit.append(key, value);
             }
         }
-
-        // Append photo if it exists
         if (photo) {
             formDataToSubmit.append('photo', photo);
         }
@@ -180,41 +267,25 @@ function EmployersList({ employers, setEmployers, loading, error }) {
                     theme: 'colored',
                     transition: Bounce,
                 });
-
-                // Update the employers list with the updated employer details
                 setEmployers((prev) =>
                     prev.map((emp) => (emp._id === editingEmployer ? res.data.updatedEmployer : emp))
                 );
-
-                // Reset the editing state
                 setEditingEmployer(null);
                 setPhoto(null);
-
-                // Optionally, reset form data
                 setFormData({
-                    name: '',
-                    email: '',
-                    contact: '',
-                    experiences: [''],
-                    position: '',
-                    totalexperience: '',
+                    name: '', email: '', contact: '', position: '', totalexperience: '', gender: '', dob: '', doj: '', nationality: '', language: '',
+                    education: [{ school: '', course: '', year: '' }],
                     skills: [''],
+                    softskills: [''],
+                    experiences: [{ company: '', jobRole: '', jobDescription: '' }],
                     projects: [{
                         projectName: '',
                         client: '',
                         teamSize: '',
                         technology: '',
-                        description: ''
+                        description: ['']
                     }],
-                    softskills: [''],
-                    education: [''],
-                    achievements: [''],
-                    gender: '',
-                    nationality: '',
-                    dob: '',
-                    doj: '',
-                    language: '',
-                    photo: null,
+                    achievements: ['']
                 });
             } else {
                 toast.error('Failed to update details', {
@@ -236,32 +307,6 @@ function EmployersList({ employers, setEmployers, loading, error }) {
         }
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleArrayChange = (e, field) => {
-        const { value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [field]: value.split(',').map(item => item.trim()).filter(item => item !== ''),
-        }));
-    };
-
-    function formatDateDDMMYYYY(date) {
-        if (!date) return '';
-        const d = new Date(date);
-        if (isNaN(d)) return '';
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const year = d.getFullYear();
-        return `${day}/${month}/${year}`;
-    }
-
-    const handleFileChange = (e) => {
-        setPhoto(e.target.files[0]);
-    };
 
 
     return (
@@ -333,7 +378,7 @@ function EmployersList({ employers, setEmployers, loading, error }) {
                             ×
                         </button>
 
-                        {/* Header Section */}
+                        {/* Header */}
                         <div className="flex items-center gap-6 mb-8 border-b pb-6">
                             <Image
                                 src={selectedEmployer.photo ? `/uploads/${selectedEmployer.photo}` : defaultavatar}
@@ -351,13 +396,14 @@ function EmployersList({ employers, setEmployers, loading, error }) {
                             </div>
                         </div>
 
-                        {/* Resume Content: Two-column layout with scrollable flow */}
+                        {/* Body */}
                         <div className="flex flex-col lg:flex-row gap-6 text-gray-700">
 
-                            {/* Left Side Sections */}
+                            {/* Left Panel */}
                             <div className="flex-1 space-y-6">
 
-                                <Section title="Personal Details">
+                                {/* Personal Details */}
+                                <Section title="👤 Personal Details">
                                     <Detail label="Total Experience" value={selectedEmployer.totalexperience} />
                                     <Detail label="Gender" value={selectedEmployer.gender} />
                                     <Detail label="Date of Birth" value={formatDateDDMMYYYY(selectedEmployer.dob)} />
@@ -366,65 +412,86 @@ function EmployersList({ employers, setEmployers, loading, error }) {
                                     <Detail label="Date of Joining" value={formatDateDDMMYYYY(selectedEmployer.doj)} />
                                 </Section>
 
-                                <Section title="Education">
-                                    <ul className="list-disc pl-5 text-sm space-y-1">
-                                        {Array.isArray(selectedEmployer.education) && selectedEmployer.education.map((item, index) => (
-                                            <li key={index}>{item}</li>
-                                        ))}
-                                    </ul>
-                                </Section>
-
-                                <Section title="Skills">
-                                    <ul className="list-disc pl-5 text-sm space-y-1">
-                                        {Array.isArray(selectedEmployer.skills) && selectedEmployer.skills.map((item, index) => (
-                                            <li key={index}>{item}</li>
-                                        ))}
-                                    </ul>
-                                </Section>
-
-                                <Section title="Soft Skills">
-                                    <ul className="list-disc pl-5 text-sm space-y-1">
-                                        {Array.isArray(selectedEmployer.softskills) && selectedEmployer.softskills.map((item, index) => (
-                                            <li key={index}>{item}</li>
-                                        ))}
-                                    </ul>
-                                </Section>
-
-                                <Section title="My Accomplishments">
-                                    <ul className="list-disc pl-5 text-sm space-y-1">
-                                        {Array.isArray(selectedEmployer.achievements) && selectedEmployer.achievements.map((item, index) => (
-                                            <li key={index}>{item}</li>
-                                        ))}
-                                    </ul>
-                                </Section>
-
-                            </div>
-
-                            {/* Right Side Sections */}
-                            <div className="flex-1 space-y-6">
-
-                                <Section title="Experience">
-                                    <ul className="list-disc pl-5 text-sm space-y-1">
-                                        {Array.isArray(selectedEmployer.experiences) && selectedEmployer.experiences.map((item, index) => (
-                                            <li key={index}>{item}</li>
-                                        ))}
-                                    </ul>
-                                </Section>
-
-                                <Section title="Projects">
-                                    <ul className="space-y-4 text-sm">
-                                        {Array.isArray(selectedEmployer.projects) && selectedEmployer.projects.map((project, index) => (
-                                            <li key={index} className="border-l-2 border-blue-300 pl-4">
-                                                <p><strong>Name:</strong> {project.projectName}</p>
-                                                <p><strong>Client:</strong> {project.client}</p>
-                                                <p><strong>Team Size:</strong> {project.teamSize}</p>
-                                                <p><strong>Technology:</strong> {project.technology}</p>
-                                                <p><strong>Description:</strong> {project.description}</p>
+                                {/* Education */}
+                                <Section title="🎓 Education">
+                                    <ul className="space-y-4">
+                                        {selectedEmployer.education?.map((edu, i) => (
+                                            <li key={i} className="flex items-start gap-4">
+                                                <span className="min-w-[30px] font-semibold">{i + 1}.</span>
+                                                <div>
+                                                    <p><b>School/College:</b> {edu.school}</p>
+                                                    <p><b>Course:</b> {edu.course}</p>
+                                                    <p><b>Year:</b> {edu.year}</p>
+                                                </div>
                                             </li>
                                         ))}
                                     </ul>
                                 </Section>
 
+                                {/* Skills */}
+                                <Section title="🛠️ Skills">
+                                    <p>{selectedEmployer.skills?.join(', ')}</p>
+                                </Section>
+
+                                {/* Soft Skills */}
+                                <Section title="💡 Soft Skills">
+                                    <p>{selectedEmployer.softskills?.join(', ')}</p>
+                                </Section>
+
+                                {/* Achievements */}
+                                <Section title="🏆 Achievements">
+                                    <ol className="list-decimal ml-6 space-y-2">
+                                        {selectedEmployer.achievements?.map((a, i) => (
+                                            <li key={i}>{a}</li>
+                                        ))}
+                                    </ol>
+                                </Section>
+                            </div>
+
+                            {/* Right Panel */}
+                            <div className="flex-1 space-y-6">
+
+                                {/* Experience */}
+                                <Section title="🏢 Experience">
+                                    <ul className="space-y-4">
+                                        {selectedEmployer.experiences?.map((exp, i) => (
+                                            <li key={i} className="flex items-start gap-4">
+                                                <span className="min-w-[30px] font-semibold">{i + 1}.</span>
+                                                <div>
+                                                    <p><b>Company:</b> {exp.company}</p>
+                                                    <p><b>Job Role:</b> {exp.jobRole}</p>
+                                                    <p><b>Description:</b> {exp.jobDescription}</p>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </Section>
+
+                                {/* Projects */}
+                                <Section title="🚀 Projects">
+                                    <ul className="space-y-6">
+                                        {selectedEmployer.projects?.map((proj, i) => (
+                                            <li key={i} className="flex items-start gap-4">
+                                                <span className="min-w-[30px] font-semibold">{i + 1}.</span>
+                                                <div className="space-y-1">
+                                                    <p><b>Project Name:</b> {proj.projectName}</p>
+                                                    <p><b>Client:</b> {proj.client}</p>
+                                                    <p><b>Team Size:</b> {proj.teamSize}</p>
+                                                    <p><b>Technology:</b> {proj.technology}</p>
+                                                    <div>
+                                                        <p className="font-semibold">Description:</p>
+                                                        <ul className="list-disc ml-6 space-y-1">
+                                                            {Array.isArray(proj.description) &&
+                                                                proj.description.map((desc, idx) => (
+                                                                    <li key={idx}>{desc}</li>
+                                                                ))}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </Section>
                             </div>
                         </div>
                     </div>
@@ -432,325 +499,197 @@ function EmployersList({ employers, setEmployers, loading, error }) {
             )}
 
 
-
             {/* Edit Modal */}
             {editingEmployer && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center text-black">
-                    <div className="bg-white w-[90%] max-w-2xl p-6 rounded-lg overflow-y-auto max-h-[90vh] relative">
-                        <button className="absolute top-2 right-2 text-5xl font-normal cursor-pointer" onClick={() => setEditingEmployer(null)}>×</button>
-                        <h2 className="text-xl font-bold mb-4">Edit Employer</h2>
-                        <form onSubmit={handleSubmit} className="space-y-3">
-                            <input type="text" name="name" placeholder="Name" className="input input-bordered w-full bg-slate-200" value={formData.name} onChange={handleInputChange} required />
-                            <input type="text" name="position" placeholder="Position" className="input input-bordered w-full bg-slate-200 " value={formData.position} onChange={handleInputChange} />
-                            <input type="email" name="email" placeholder="Email" className="input input-bordered w-full bg-slate-200" value={formData.email} onChange={handleInputChange} />
-                            <input type="text" name="contact" placeholder="Contact Number" className="input input-bordered w-full bg-slate-200" value={formData.contact} onChange={handleInputChange} />
-                            <input type="text" name="gender" placeholder="Gender" className="input input-bordered w-full bg-slate-200" value={formData.gender} onChange={handleInputChange} />
-                            <label>Date of Birth</label>
-                            <input type="date" name="dob" className="input input-bordered w-full bg-slate-200" value={formData.dob} onChange={handleInputChange} />
-                            <input type="text" name="nationality" placeholder="Nationality" className="input input-bordered w-full bg-slate-200" value={formData.nationality} onChange={handleInputChange} />
-                            <input type="text" name="language" placeholder="Language Proficiency" className="input input-bordered w-full bg-slate-200" value={formData.language} onChange={handleInputChange} />
-                            <label>Date of Join</label>
-                            <input type="date" name="doj" className="input input-bordered w-full bg-slate-200" value={formData.doj} onChange={handleInputChange} />
-                            <input type="text" name="totalexperience" placeholder="Total Experience" className="input input-bordered w-full bg-slate-200" value={formData.totalexperience} onChange={handleInputChange} />
+                <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+                    <div className="bg-white w-[95%] max-w-2xl p-6 rounded-xl shadow-2xl overflow-y-auto max-h-[90vh] relative">
 
-                            {/* Dynamic Array Fields */}
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            {/* Static Fields */}
+                            <input type="text" name="name" placeholder="Name" className="input input-bordered w-full bg-slate-200 text-black"
+                                value={formData.name} onChange={handleInputChange} />
+                            <input type="email" name="email" placeholder="Email" className="input input-bordered w-full bg-slate-200 text-black"
+                                value={formData.email} onChange={handleInputChange} />
+                            <input type="text" name="contact" placeholder="Contact Number" className="input input-bordered w-full bg-slate-200 text-black"
+                                value={formData.contact} onChange={handleInputChange} />
+                            <input type="text" name="position" placeholder="Position" className="input input-bordered w-full bg-slate-200 text-black"
+                                value={formData.position} onChange={handleInputChange} />
+                            <input type="text" name="totalexperience" placeholder="Total Experience" className="input input-bordered w-full bg-slate-200 text-black"
+                                value={formData.totalexperience} onChange={handleInputChange} />
+                            <input type="text" name="gender" placeholder="Gender" className="input input-bordered w-full bg-slate-200 text-black"
+                                value={formData.gender} onChange={handleInputChange} />
+                            <label className='text-black'>Date of Birth</label>
+                            <input type="date" name="dob" className="input input-bordered w-full bg-slate-200 text-black"
+                                value={formData.dob} onChange={handleInputChange} />
+                            <input type="text" name="nationality" placeholder="Nationality" className="input input-bordered w-full bg-slate-200 text-black"
+                                value={formData.nationality} onChange={handleInputChange} />
+                            <input type="text" name="language" placeholder="Languages" className="input input-bordered w-full bg-slate-200 text-black"
+                                value={formData.language} onChange={handleInputChange} />
+                            <label className='text-black'>Date of Joining</label>
+                            <input type="date" name="doj" className="input input-bordered w-full bg-slate-200 text-black"
+                                value={formData.doj} onChange={handleInputChange} />
+
                             {/* Education */}
                             <div>
-                                <label className="font-semibold">Education</label>
-                                {formData.education.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-2 mb-1">
-                                        <input
-                                            type="text"
-                                            className="input input-bordered w-full bg-slate-200"
-                                            value={item}
-                                            onChange={e => {
-                                                const updated = [...formData.education];
-                                                updated[idx] = e.target.value;
-                                                setFormData(prev => ({ ...prev, education: updated }));
-                                            }}
-                                        />
-                                        {formData.education.length > 1 && (
-                                            <button
-                                                type="button"
-                                                className="btn btn-xs bg-red-600 text-white"
-                                                onClick={() => setFormData(prev => ({
-                                                    ...prev,
-                                                    education: prev.education.filter((_, i) => i !== idx)
-                                                }))}
-                                            >Remove</button>
-                                        )}
+                                <label className="font-semibold text-black">Education</label>
+                                {formData.education.map((edu, idx) => (
+                                    <div key={idx} className="space-y-2 border border-black p-3 mb-2 relative">
+                                        <input type="text" placeholder="School/College" className="input input-bordered bg-slate-200 text-black w-full"
+                                            value={edu.school} onChange={e => handleEducationChange(idx, 'school', e.target.value)} />
+                                        <input type="text" placeholder="Course" className="input input-bordered bg-slate-200 text-black w-full"
+                                            value={edu.course} onChange={e => handleEducationChange(idx, 'course', e.target.value)} />
+                                        <input type="text" placeholder="Year" className="input input-bordered bg-slate-200 text-black w-full"
+                                            value={edu.year} onChange={e => handleEducationChange(idx, 'year', e.target.value)} />
+                                        <button type="button" className="btn btn-error btn-xs mt-1"
+                                            onClick={() => removeEducationField(idx)}>Remove</button>
                                     </div>
                                 ))}
-                                <button
-                                    type="button"
-                                    className="btn btn-sm mt-1 bg-purple-600 text-white"
-                                    onClick={() =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            education: [...prev.education, ""]
-                                        }))
-                                    }
-                                >
-                                    + Add Education
-                                </button>
+                                <button type="button" className="btn btn-sm bg-purple-600 text-white ml-2"
+                                    onClick={addEducationField}>+ Add Education</button>
                             </div>
 
-                            {/* Skills */}
+                            {/* Experience */}
                             <div>
-                                <label className="font-semibold">Skills</label>
-                                {formData.skills.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-2 mb-1">
-                                        <input
-                                            type="text"
-                                            className="input input-bordered w-full bg-slate-200"
-                                            value={item}
-                                            onChange={e => {
-                                                const updated = [...formData.skills];
-                                                updated[idx] = e.target.value;
-                                                setFormData(prev => ({ ...prev, skills: updated }));
-                                            }}
-                                        />
-                                        {formData.skills.length > 1 && (
-                                            <button
-                                                type="button"
-                                                className="btn btn-xs bg-red-600 text-white"
-                                                onClick={() => setFormData(prev => ({
-                                                    ...prev,
-                                                    skills: prev.skills.filter((_, i) => i !== idx)
-                                                }))}
-                                            >Remove</button>
-                                        )}
+                                <label className="font-semibold text-black">Experience</label>
+                                {formData.experiences.map((exp, idx) => (
+                                    <div key={idx} className="space-y-2 border border-black p-3 mb-2 relative">
+                                        <input type="text" placeholder="Company" className="input input-bordered w-full bg-slate-200 text-black"
+                                            value={exp.company} onChange={e => handleExperienceChange(idx, 'company', e.target.value)} />
+                                        <input type="text" placeholder="Job Role" className="input input-bordered w-full bg-slate-200 text-black"
+                                            value={exp.jobRole} onChange={e => handleExperienceChange(idx, 'jobRole', e.target.value)} />
+                                        <textarea placeholder="Job Description" className="input input-bordered w-full bg-slate-200 text-black"
+                                            value={exp.jobDescription} onChange={e => handleExperienceChange(idx, 'jobDescription', e.target.value)} />
+                                        <button type="button" className="btn btn-error btn-xs mt-1"
+                                            onClick={() => removeExperienceField(idx)}>Remove</button>
                                     </div>
                                 ))}
-                                <button
-                                    type="button"
-                                    className="btn btn-sm mt-1 bg-purple-600 text-white"
-                                    onClick={() =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            skills: [...prev.skills, ""]
-                                        }))
-                                    }
-                                >
-                                    + Add Skill
-                                </button>
+                                <button type="button" className="btn btn-sm bg-purple-600 text-white"
+                                    onClick={addExperienceField}>+ Add Experience</button>
                             </div>
 
-                            {/* Soft Skills */}
+                            {/* Projects */}
                             <div>
-                                <label className="font-semibold">Soft Skills</label>
-                                {formData.softskills.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-2 mb-1">
-                                        <input
-                                            type="text"
-                                            className="input input-bordered w-full bg-slate-200"
-                                            value={item}
-                                            onChange={e => {
-                                                const updated = [...formData.softskills];
-                                                updated[idx] = e.target.value;
-                                                setFormData(prev => ({ ...prev, softskills: updated }));
-                                            }}
-                                        />
-                                        {formData.softskills.length > 1 && (
-                                            <button
-                                                type="button"
-                                                className="btn btn-xs bg-red-600 text-white"
-                                                onClick={() => setFormData(prev => ({
-                                                    ...prev,
-                                                    softskills: prev.softskills.filter((_, i) => i !== idx)
-                                                }))}
-                                            >Remove</button>
-                                        )}
-                                    </div>
-                                ))}
-                                <button
-                                    type="button"
-                                    className="btn btn-sm mt-1 bg-purple-600 text-white"
-                                    onClick={() =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            softskills: [...prev.softskills, ""]
-                                        }))
-                                    }
-                                >
-                                    + Add Soft Skill
-                                </button>
-                            </div>
+                                <label className="font-semibold text-black">Projects</label>
+                                {formData.projects.map((proj, idx) => (
+                                    <div key={idx} className="border p-3 mb-3 rounded bg-slate-50 relative">
+                                        {/* Remove Entire Project */}
+                                        <button
+                                            type="button"
+                                            className="absolute top-2 right-2 bg-red-500 px-1 py-1 rounded-md cursor-pointer"
+                                            onClick={() => removeProjectField(idx)}
+                                        >
+                                            Remove
+                                        </button>
 
-                            {/* Experiences */}
-                            <div>
-                                <label className="font-semibold">Experiences</label>
-                                {formData.experiences.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-2 mb-1">
-                                        <input
-                                            type="text"
-                                            className="input input-bordered w-full bg-slate-200"
-                                            value={item}
-                                            onChange={e => {
-                                                const updated = [...formData.experiences];
-                                                updated[idx] = e.target.value;
-                                                setFormData(prev => ({ ...prev, experiences: updated }));
-                                            }}
-                                        />
-                                        {formData.experiences.length > 1 && (
-                                            <button
-                                                type="button"
-                                                className="btn btn-xs bg-red-600 text-white"
-                                                onClick={() => setFormData(prev => ({
-                                                    ...prev,
-                                                    experiences: prev.experiences.filter((_, i) => i !== idx)
-                                                }))}
-                                            >Remove</button>
-                                        )}
-                                    </div>
-                                ))}
-                                <button
-                                    type="button"
-                                    className="btn btn-sm mt-1 bg-purple-600 text-white"
-                                    onClick={() =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            experiences: [...prev.experiences, ""]
-                                        }))
-                                    }
-                                >
-                                    + Add Experience
-                                </button>
-                            </div>
-
-                            {/* Achievements */}
-                            <div>
-                                <label className="font-semibold">My Accomplishments</label>
-                                {formData.achievements.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-2 mb-1">
-                                        <input
-                                            type="text"
-                                            className="input input-bordered w-full bg-slate-200"
-                                            value={item}
-                                            onChange={e => {
-                                                const updated = [...formData.achievements];
-                                                updated[idx] = e.target.value;
-                                                setFormData(prev => ({ ...prev, achievements: updated }));
-                                            }}
-                                        />
-                                        {formData.achievements.length > 1 && (
-                                            <button
-                                                type="button"
-                                                className="btn btn-xs bg-red-600 text-white"
-                                                onClick={() => setFormData(prev => ({
-                                                    ...prev,
-                                                    achievements: prev.achievements.filter((_, i) => i !== idx)
-                                                }))}
-                                            >Remove</button>
-                                        )}
-                                    </div>
-                                ))}
-                                <button
-                                    type="button"
-                                    className="btn btn-sm mt-1 bg-purple-600 text-white"
-                                    onClick={() =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            achievements: [...prev.achievements, ""]
-                                        }))
-                                    }
-                                >
-                                    + Add Achievement
-                                </button>
-                            </div>
-
-                            {/* Projects with subfields (unchanged) */}
-                            <div>
-                                <label className="font-semibold">Projects</label>
-                                {formData.projects.map((project, index) => (
-                                    <div key={index} className="border p-3 mb-2 rounded bg-slate-50">
                                         <input
                                             type="text"
                                             placeholder="Project Name"
-                                            className="input input-bordered w-full mb-1 bg-slate-200"
-                                            value={project.projectName}
-                                            onChange={e => handleProjectFieldChange(index, 'projectName', e.target.value)}
+                                            className="input input-bordered w-full mb-1 bg-slate-200 text-black mt-8"
+                                            value={proj.projectName}
+                                            onChange={e => handleProjectFieldChange(idx, 'projectName', e.target.value)}
                                         />
                                         <input
                                             type="text"
                                             placeholder="Client"
-                                            className="input input-bordered w-full mb-1 bg-slate-200"
-                                            value={project.client}
-                                            onChange={e => handleProjectFieldChange(index, 'client', e.target.value)}
+                                            className="input input-bordered w-full mb-1 bg-slate-200 text-black"
+                                            value={proj.client}
+                                            onChange={e => handleProjectFieldChange(idx, 'client', e.target.value)}
                                         />
                                         <input
                                             type="number"
                                             placeholder="Team Size"
-                                            className="input input-bordered w-full mb-1 bg-slate-200"
-                                            value={project.teamSize}
-                                            onChange={e => handleProjectFieldChange(index, 'teamSize', e.target.value)}
+                                            className="input input-bordered w-full mb-1 bg-slate-200 text-black"
+                                            value={proj.teamSize}
+                                            onChange={e => handleProjectFieldChange(idx, 'teamSize', e.target.value)}
                                         />
                                         <input
                                             type="text"
                                             placeholder="Technology"
-                                            className="input input-bordered w-full mb-1 bg-slate-200"
-                                            value={project.technology}
-                                            onChange={e => handleProjectFieldChange(index, 'technology', e.target.value)}
+                                            className="input input-bordered w-full mb-1 bg-slate-200 text-black"
+                                            value={proj.technology}
+                                            onChange={e => handleProjectFieldChange(idx, 'technology', e.target.value)}
                                         />
-                                        <textarea
-                                            placeholder="Project Description"
-                                            className="input input-bordered w-full mb-1 bg-slate-200 h-40"
-                                            value={project.description}
-                                            onChange={e => handleProjectFieldChange(index, 'description', e.target.value)}
-                                        />
-                                        {formData.projects.length > 1 && (
-                                            <button type="button" className="btn btn-xs bg-red-600 text-white" onClick={() => removeProjectField(index)}>Remove</button>
-                                        )}
+
+                                        {/* Description Points */}
+                                        <div>
+                                            <label className="text-black">Project Description (Points)</label>
+                                            {proj.description.map((desc, dIdx) => (
+                                                <div key={dIdx} className="flex gap-2 mb-1">
+                                                    <textarea
+                                                        className="input input-bordered w-full bg-slate-200 text-black p-1"
+                                                        value={desc}
+                                                        placeholder={`Point ${dIdx + 1}`}
+                                                        onChange={e => handleProjectDescriptionChange(idx, dIdx, e.target.value)}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-error btn-xs"
+                                                        onClick={() => removeDescriptionPoint(idx, dIdx)}
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            <button
+                                                type="button"
+                                                className="btn btn-primary btn-sm"
+                                                onClick={() => addDescriptionPoint(idx)}
+                                            >
+                                                + Add Point
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                                 <button
                                     type="button"
-                                    className="btn btn-sm mt-2 bg-purple-600 text-white"
+                                    className="btn btn-sm bg-purple-600 text-white"
                                     onClick={addProjectField}
                                 >
                                     + Add Project
                                 </button>
                             </div>
 
-                            <label>Profile Photo</label>
-                            <input type="file" accept="image/*" className="file-input file-input-bordered w-full bg-slate-200
-                            " onChange={handleFileChange} />
 
-                            <div className="flex justify-end gap-2 mt-4">
-                                <button
-                                    type="submit"
-                                    className="bg-purple-600 px-4 py-2 rounded text-white flex items-center justify-center"
-                                    disabled={isSubmitting}
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <svg
-                                                className="animate-spin h-5 w-5 mr-2 text-white"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <circle
-                                                    className="opacity-25"
-                                                    cx="12"
-                                                    cy="12"
-                                                    r="10"
-                                                    stroke="currentColor"
-                                                    strokeWidth="4"
-                                                ></circle>
-                                                <path
-                                                    className="opacity-75"
-                                                    fill="currentColor"
-                                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                                ></path>
-                                            </svg>
-                                            submitting...
-                                        </>
-                                    ) : (
-                                        'Submit'
-                                    )}
+                            {/* Skills, Softskills, Achievements */}
+                            {['skills', 'softskills', 'achievements'].map(field => (
+                                <div key={field}>
+                                    <label className="font-semibold capitalize text-black">
+                                        {field === 'achievements' ? 'My Accomplishments' : field}
+                                    </label>
+                                    {formData[field].map((item, idx) => (
+                                        <div key={idx} className="flex gap-2 mb-1">
+                                            {field === 'achievements' ? (
+                                                <textarea className="input input-bordered w-full bg-slate-200 text-black"
+                                                    value={item} onChange={e => handleArrayChange(field, idx, e.target.value)} />
+                                            ) : (
+                                                <input type="text" className="input input-bordered w-full bg-slate-200 text-black"
+                                                    value={item} onChange={e => handleArrayChange(field, idx, e.target.value)} />
+                                            )}
+                                            <button type="button" className="btn btn-error btn-xs"
+                                                onClick={() => removeArrayField(field, idx)}>Remove</button>
+                                        </div>
+                                    ))}
+                                    <button type="button" className="btn btn-sm bg-purple-600 text-white"
+                                        onClick={() => addArrayField(field)}>+ Add</button>
+                                </div>
+                            ))}
+
+                            {/* Photo */}
+                            <div>
+                                <label className="font-semibold text-black">Photo</label>
+                                <input type="file" accept="image/*" className="file-input file-input-bordered w-full bg-slate-200 text-black"
+                                    onChange={handleFileChange} />
+                            </div>
+
+                            <div className="flex gap-2 justify-center">
+                                <button type="submit" className="px-4 py-2 rounded-md bg-purple-600 text-white"
+                                    disabled={isSubmitting}>
+                                    {isSubmitting ? 'Updating...' : 'Update'}
                                 </button>
-                                <button type="button" className="btn" onClick={() => setEditingEmployer(null)}>Close</button>
+                                <button type="button" className="px-4 py-2 rounded-md bg-gray-600 text-white"
+                                    onClick={() => setEditingEmployer(null)}>
+                                    Close
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -761,17 +700,20 @@ function EmployersList({ employers, setEmployers, loading, error }) {
     );
 }
 
+function Section({ title, children }) {
+    return (
+        <div>
+            <h4 className="font-bold mb-2">{title}</h4>
+            <div className="space-y-1">{children}</div>
+        </div>
+    );
+}
+function Detail({ label, value }) {
+    return value ? (
+        <div>
+            <span className="font-semibold">{label}:</span> {value}
+        </div>
+    ) : null;
+}
+
 export default EmployersList;
-
-
-
-const Section = ({ title, children }) => (
-    <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">{title}</h3>
-        {children}
-    </div>
-);
-
-const Detail = ({ label, value }) => (
-    <p className="text-sm"><strong>{label}:</strong> {value}</p>
-);
