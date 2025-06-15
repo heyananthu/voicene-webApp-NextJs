@@ -1,0 +1,23 @@
+@import "tailwindcss";
+@plugin "daisyui";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
+
+:root {
+  --background: #FFFFFFFF;
+}
+
+/* Add this 👇 to connect font-poppins */
+.font-poppins {
+  font-family: var(--font-poppins), sans-serif;
+}
+
+/* * {
+  color: black !important; 
+} */
+.Toastify__toast-container {
+  z-index: 9999 !important;
+}

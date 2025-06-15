@@ -1,0 +1,52 @@
+{
+  "name": "voicene",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postinstall": "flowbite-react patch",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
+    "@radix-ui/react-avatar": "^1.1.4",
+    "axios": "^1.8.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "drizzle-orm": "^0.44.2",
+    "flowbite": "^3.1.2",
+    "flowbite-react": "^0.11.7",
+    "framer-motion": "^12.7.4",
+    "lottie-react": "^2.4.1",
+    "lucide-react": "^0.488.0",
+    "mongoose": "^8.13.2",
+    "multer": "^1.4.5-lts.2",
+    "next": "15.3.0",
+    "next-themes": "^0.4.6",
+    "pg": "^8.16.0",
+    "preline": "^3.0.1",
+    "react": "^19.0.0",
+    "react-datepicker": "^8.3.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
+    "react-toastify": "^11.0.5",
+    "sonner": "^2.0.3",
+    "tailwind-merge": "^3.2.0",
+    "tw-animate-css": "^1.2.5"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "autoprefixer": "^10.4.21",
+    "daisyui": "^5.0.25",
+    "drizzle-kit": "^0.31.1",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.4"
+  }
+}
