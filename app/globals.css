@@ -7,7 +7,11 @@
 @source "../.flowbite-react/class-list.json";
 
 :root {
+<<<<<<< HEAD
   --background: #FFFFFFFF;
+=======
+  --background: #ffffff;
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
 }
 
 /* Add this 👇 to connect font-poppins */

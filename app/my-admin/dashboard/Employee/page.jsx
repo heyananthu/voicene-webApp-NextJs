@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 "use client";
+=======
+'use client';
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -7,7 +11,11 @@ import EmployersList from './_components/EmployersList';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MdDelete } from "react-icons/md";
+<<<<<<< HEAD
 import { motion, AnimatePresence } from "framer-motion";
+=======
+
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
 
 function Page() {
   const router = useRouter();
@@ -16,12 +24,19 @@ function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [employers, setEmployers] = useState([]);
   const [loading, setLoading] = useState(false);
+<<<<<<< HEAD
   const [editingId, setEditingId] = useState(null);
 
+=======
+
+
+  // Updated state for education & experience
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const [form, setForm] = useState({
     name: '',
     email: '',
     contact: '',
+<<<<<<< HEAD
     experiences: [{ company: '', jobRole: '', jobDescription: '' }],
     position: '',
     totalexperience: '',
@@ -29,6 +44,27 @@ function Page() {
     projects: [{ projectName: '', client: '', teamSize: '', technology: '', description: [''] }],
     softskills: [''],
     education: [{ school: '', course: '', year: '' }],
+=======
+    experiences: [
+      { company: '', jobRole: '', jobDescription: '' }
+    ],
+    position: '',
+    totalexperience: '',
+    skills: [''],
+    projects: [
+      {
+        projectName: '',
+        client: '',
+        teamSize: '',
+        technology: '',
+        description: ['']
+      }
+    ],
+    softskills: [''],
+    education: [
+      { school: '', course: '', year: '' }
+    ],
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
     achievements: [''],
     gender: '',
     nationality: '',
@@ -57,6 +93,7 @@ function Page() {
     fetchEmployers();
   }, []);
 
+<<<<<<< HEAD
   const handleEdit = (employer) => {
     setForm({
       name: employer.name || '',
@@ -82,6 +119,8 @@ function Page() {
     document.getElementById('my_modal_1').showModal();
   };
 
+=======
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   useEffect(() => {
     setIsClient(true);
     if (typeof window !== 'undefined') {
@@ -100,6 +139,10 @@ function Page() {
 
   if (!isClient) return null;
 
+<<<<<<< HEAD
+=======
+  // For simple array fields (skills, softskills, achievements)
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const updateFieldArray = (type, value, index) => {
     const updated = [...form[type]];
     updated[index] = value;
@@ -116,50 +159,79 @@ function Page() {
     setForm({ ...form, [type]: updated });
   };
 
+<<<<<<< HEAD
+=======
+  // For project subfields
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const updateProjectField = (index, field, value) => {
     const updatedProjects = [...form.projects];
     updatedProjects[index][field] = value;
     setForm({ ...form, projects: updatedProjects });
   };
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const removeProjectField = (index) => {
     const updatedProjects = [...form.projects];
     updatedProjects.splice(index, 1);
     setForm({ ...form, projects: updatedProjects });
   };
 
+<<<<<<< HEAD
+=======
+  // EDUCATION handlers
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const updateEducationField = (index, field, value) => {
     const updated = [...form.education];
     updated[index][field] = value;
     setForm({ ...form, education: updated });
   };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const addEducationField = () => {
     setForm({
       ...form,
       education: [...form.education, { school: '', course: '', year: '' }]
     });
   };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const removeEducationField = (index) => {
     const updated = [...form.education];
     updated.splice(index, 1);
     setForm({ ...form, education: updated });
   };
 
+<<<<<<< HEAD
+=======
+  // EXPERIENCE handlers
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const updateExperienceField = (index, field, value) => {
     const updated = [...form.experiences];
     updated[index][field] = value;
     setForm({ ...form, experiences: updated });
   };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const addExperienceField = () => {
     setForm({
       ...form,
       experiences: [...form.experiences, { company: '', jobRole: '', jobDescription: '' }]
     });
   };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const removeExperienceField = (index) => {
     const updated = [...form.experiences];
     updated.splice(index, 1);
@@ -178,11 +250,19 @@ function Page() {
     e.preventDefault();
     setIsSubmitting(true);
 
+<<<<<<< HEAD
+=======
+    // Filter arrays
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
     const filteredArrays = {};
     ['skills', 'softskills', 'achievements'].forEach((field) => {
       filteredArrays[field] = form[field].map(item => item.trim()).filter(Boolean);
     });
 
+<<<<<<< HEAD
+=======
+    // Filter projects: remove empty ones
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
     const filteredProjects = form.projects.filter(
       p =>
         p.projectName.trim() ||
@@ -192,10 +272,17 @@ function Page() {
         (Array.isArray(p.description) ? p.description.some(d => d.trim()) : false)
     );
 
+<<<<<<< HEAD
     const filteredEducation = form.education.filter(
       edu => edu.school.trim() || edu.course.trim() || edu.year.trim()
     );
 
+=======
+    // Filter education and experience: remove empty entries
+    const filteredEducation = form.education.filter(
+      edu => edu.school.trim() || edu.course.trim() || edu.year.trim()
+    );
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
     const filteredExperiences = form.experiences.filter(
       exp => exp.company.trim() || exp.jobRole.trim() || exp.jobDescription.trim()
     );
@@ -211,6 +298,10 @@ function Page() {
       arr.forEach(item => formData.append(field, item));
     });
 
+<<<<<<< HEAD
+=======
+    // Send projects, education, experiences as JSON string
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
     formData.append('projects', JSON.stringify(filteredProjects));
     formData.append('education', JSON.stringify(filteredEducation));
     formData.append('experiences', JSON.stringify(filteredExperiences));
@@ -221,6 +312,7 @@ function Page() {
     formData.append('doj', form.doj);
     formData.append('language', form.language);
 
+<<<<<<< HEAD
     if (form.photo) {
       formData.append('photo', form.photo);
     }
@@ -243,6 +335,22 @@ function Page() {
         await fetchEmployers();
         handleCloseModal();
         setIsSubmitting(false);
+=======
+    if (form.photo) formData.append('photo', form.photo);
+
+    try {
+      const response = await axios.post('/api/employees', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 201) {
+        toast.success('New Details Added');
+        await fetchEmployers();
+        setIsSubmitting(false);
+        handleCloseModal();
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
 
         setForm({
           name: '',
@@ -252,7 +360,19 @@ function Page() {
           position: '',
           totalexperience: '',
           skills: [''],
+<<<<<<< HEAD
           projects: [{ projectName: '', client: '', teamSize: '', technology: '', description: [''] }],
+=======
+          projects: [
+            {
+              projectName: '',
+              client: '',
+              teamSize: '',
+              technology: '',
+              description: ['']
+            }
+          ],
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
           softskills: [''],
           education: [{ school: '', course: '', year: '' }],
           achievements: [''],
@@ -263,8 +383,11 @@ function Page() {
           language: '',
           photo: null,
         });
+<<<<<<< HEAD
 
         setEditingId(null);
+=======
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
       }
     } catch (err) {
       if (err.response && err.response.status === 409) {
@@ -287,6 +410,10 @@ function Page() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  // Project description handlers
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const updateDescriptionPoint = (projectIndex, descIndex, value) => {
     const updatedProjects = [...form.projects];
     updatedProjects[projectIndex].description[descIndex] = value;
@@ -310,6 +437,10 @@ function Page() {
     setForm({ ...form, projects: updatedProjects });
   };
 
+<<<<<<< HEAD
+=======
+  // Place this handler in your component:
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
   const addProjectField = () => {
     setForm(prevForm => ({
       ...prevForm,
@@ -326,8 +457,14 @@ function Page() {
     }));
   };
 
+<<<<<<< HEAD
   return (
     <div className="w-full h-screen bg-white py-16 px-4 sm:px-6 lg:px-8 p-12 relative "  suppressHydrationWarning>
+=======
+
+  return (
+    <div className="w-full bg-white min-h-screen mt-20 px-4 relative" suppressHydrationWarning>
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
       <ToastContainer
         position="top-center"
         autoClose={3000}
@@ -339,6 +476,7 @@ function Page() {
         toastClassName="!z-[9999]"
       />
 
+<<<<<<< HEAD
       <div className="flex justify-end mb-6 max-w-screen-xl mx-auto">
         <motion.button
           className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 px-6 rounded-lg font-medium shadow-md hover:shadow-xl transition-all duration-300 mt-12"
@@ -561,10 +699,238 @@ function Page() {
                         type="button"
                         className="absolute top-2 right-2 btn btn-error btn-sm hover:bg-red-600 transition-colors duration-200"
                         onClick={() => removeProjectField(index)}
+=======
+      <div className="flex justify-end mb-4">
+        <button
+          className="bg-purple-600 py-2 px-5 text-white rounded-md hover:scale-105 transition"
+          onClick={() => document.getElementById('my_modal_1').showModal()}
+        >
+          Create +
+        </button>
+      </div>
+
+      <EmployersList employers={employers} setEmployers={setEmployers} loading={loading} error={error} />
+
+      <dialog id="my_modal_1" className="modal z-[50]">
+        <div className="modal-box bg-gray-200 max-w-xl">
+          <form onSubmit={handleSubmit} className="space-y-4 text-black">
+            <input
+              type="text"
+              placeholder="Name"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Position"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.position}
+              onChange={(e) => setForm({ ...form, position: e.target.value })}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              required
+            />
+            {isDuplicate && (
+              <p className='text-rose-600'>Email Already Exist</p>
+            )}
+            <input
+              type="text"
+              placeholder="Contact Number"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.contact}
+              onChange={(e) => setForm({ ...form, contact: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Gender"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.gender}
+              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+            />
+            <label>Date of Birth</label><br />
+            <input
+              type="date"
+              className="input bg-slate-300"
+              placeholder="Date of Birth"
+              value={form.dob}
+              onChange={(e) => setForm({ ...form, dob: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Nationality"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.nationality}
+              onChange={(e) => setForm({ ...form, nationality: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Language Proficiency"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.language}
+              onChange={(e) => setForm({ ...form, language: e.target.value })}
+            />
+            <label>Date of Join</label><br />
+            <input
+              type="date"
+              className="input bg-slate-300"
+              placeholder="Date of Join"
+              value={form.doj}
+              onChange={(e) => setForm({ ...form, doj: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Total Experience"
+              className="input input-bordered w-full bg-slate-50"
+              value={form.totalexperience}
+              onChange={(e) => setForm({ ...form, totalexperience: e.target.value })}
+            />
+
+            {/* Education Section */}
+            {/* Education Section */}
+            <div>
+              <label className="font-semibold">Education</label>
+              {form.education.map((edu, index) => (
+                <div key={index} className="mb-2 p-6 bg-slate-50 rounded relative">
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      className="absolute top-1 right-1 text-red-600 cursor-pointer"
+                      onClick={() => {
+                        const updated = [...form.education];
+                        updated.splice(index, 1);
+                        setForm({ ...form, education: updated });
+                      }}
+                    >
+                      <MdDelete size={20} />
+                    </button>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="School/College"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={edu.school}
+                    onChange={e => updateEducationField(index, 'school', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Course"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={edu.course}
+                    onChange={e => updateEducationField(index, 'course', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Year of Passing"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={edu.year}
+                    onChange={e => updateEducationField(index, 'year', e.target.value)}
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-sm mt-2 bg-purple-600 text-white"
+                onClick={addEducationField}
+              >
+                + Add Education
+              </button>
+            </div>
+
+            {/* Experience Section */}
+            <div className=''>
+              <label className="font-semibold">Experience</label>
+              {form.experiences.map((exp, index) => (
+                <div key={index} className="mb-2 p-6 bg-slate-50 rounded relative">
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      className="absolute top-1 right-1 text-red-600  cursor-pointer"
+                      onClick={() => {
+                        const updated = [...form.experiences];
+                        updated.splice(index, 1);
+                        setForm({ ...form, experiences: updated });
+                      }}
+                    >
+                      <MdDelete size={20} />
+                    </button>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Company"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={exp.company}
+                    onChange={e => updateExperienceField(index, 'company', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Job Role"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={exp.jobRole}
+                    onChange={e => updateExperienceField(index, 'jobRole', e.target.value)}
+                  />
+                  <textarea
+                    placeholder="Job Description"
+                    className="input input-bordered w-full h-24 mb-1 bg-slate-300"
+                    value={exp.jobDescription}
+                    onChange={e => updateExperienceField(index, 'jobDescription', e.target.value)}
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-sm mt-2 bg-purple-600 text-white"
+                onClick={addExperienceField}
+              >
+                + Add Experience
+              </button>
+            </div>
+
+            {/* Dynamic fields (skills, softskills, achievements) */}
+            {['skills', 'softskills', 'achievements'].map((field) => (
+              <div key={field}>
+                <label className="font-semibold capitalize">
+                  {field === 'achievements' ? 'My Accomplishments' : field}
+                </label>
+                {form[field].map((item, index) => (
+                  <div key={index} className="flex items-center gap-2 mb-1">
+                    {field === 'achievements' ? (
+                      <textarea
+                        placeholder={field === 'achievements' ? 'Accomplishment' : field}
+                        className="input input-bordered w-full bg-slate-50 h-20"
+                        value={item}
+                        onChange={(e) => updateFieldArray(field, e.target.value, index)}
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        placeholder={field}
+                        className="input input-bordered w-full bg-slate-50"
+                        value={item}
+                        onChange={(e) => updateFieldArray(field, e.target.value, index)}
+                      />
+                    )}
+                    {index > 0 && (
+                      <button
+                        type="button"
+                        className="btn btn-error btn-xs"
+                        onClick={() => {
+                          const updated = [...form[field]];
+                          updated.splice(index, 1);
+                          setForm({ ...form, [field]: updated });
+                        }}
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
                       >
                         Remove
                       </button>
                     )}
+<<<<<<< HEAD
                     {['projectName', 'client', 'teamSize', 'technology'].map(field => (
                       <div key={field} className="flex flex-col mb-2">
                         <label className="text-sm font-medium text-gray-700 mb-1">
@@ -588,11 +954,83 @@ function Page() {
                             value={point}
                             placeholder={`Point ${descIndex + 1}`}
                             onChange={e => updateDescriptionPoint(index, descIndex, e.target.value)}
+=======
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="btn btn-sm mt-2 bg-purple-600 text-white"
+                  onClick={() => addField(field)}
+                >
+                  + Add
+                </button>
+              </div>
+            ))}
+
+            {/* Projects with subfields */}
+            <div>
+              <label className="font-semibold">Projects</label>
+              {form.projects.map((project, index) => (
+                <div key={index} className="border py-10 p-3 mb-2 rounded bg-slate-50 relative">
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 btn btn-error btn-xs"
+                      onClick={() => removeProjectField(index)}
+                    >
+                      Remove
+                    </button>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Project Name"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.projectName}
+                    onChange={e => updateProjectField(index, 'projectName', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Client"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.client}
+                    onChange={e => updateProjectField(index, 'client', e.target.value)}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Team Size"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.teamSize}
+                    onChange={e => updateProjectField(index, 'teamSize', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Technology"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.technology}
+                    onChange={e => updateProjectField(index, 'technology', e.target.value)}
+                  />
+                  <div className="mb-2">
+                    <label className="font-semibold">Project Description (Points)</label>
+                    {Array.isArray(project.description) &&
+                      project.description.map((point, descIndex) => (
+                        <div key={descIndex} className="flex gap-2 items-center mb-1">
+                          <textarea
+                            className="input input-bordered w-full bg-slate-300 h-16"
+                            value={point}
+                            placeholder={`Point ${descIndex + 1}`}
+                            onChange={e =>
+                              updateDescriptionPoint(index, descIndex, e.target.value)
+                            }
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
                           />
                           {descIndex > 0 && (
                             <button
                               type="button"
+<<<<<<< HEAD
                               className="btn btn-error btn-sm hover:bg-red-600 transition-colors duration-200"
+=======
+                              className="btn btn-error btn-xs"
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
                               onClick={() => removeDescriptionPoint(index, descIndex)}
                             >
                               Remove
@@ -600,6 +1038,7 @@ function Page() {
                           )}
                         </div>
                       ))}
+<<<<<<< HEAD
                       <button
                         type="button"
                         className="btn btn-sm bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 mt-1"
@@ -660,8 +1099,155 @@ function Page() {
           </motion.div>
         </dialog>
       </AnimatePresence>
+=======
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-sm mt-1"
+                      onClick={() => addDescriptionPoint(index)}
+                    >
+                      + Add Point
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-sm mt-2 bg-purple-600 text-white"
+                onClick={addProjectField} // <--- Use the handler directly
+              >
+                + Add Project
+              </button>
+            </div>
+
+
+            {/* Projects with subfields */}
+            {/* <div>
+              <label className="font-semibold">Projects</label>
+              {form.projects.map((project, index) => (
+                <div key={index} className="border py-10 p-3 mb-2 rounded bg-slate-50 relative">
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 btn btn-error btn-xs"
+                      onClick={() => {
+                        const updated = [...form.projects];
+                        updated.splice(index, 1);
+                        setForm({ ...form, projects: updated });
+                      }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Project Name"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.projectName}
+                    onChange={e => updateProjectField(index, 'projectName', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Client"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.client}
+                    onChange={e => updateProjectField(index, 'client', e.target.value)}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Team Size"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.teamSize}
+                    onChange={e => updateProjectField(index, 'teamSize', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Technology"
+                    className="input input-bordered w-full mb-1 bg-slate-300"
+                    value={project.technology}
+                    onChange={e => updateProjectField(index, 'technology', e.target.value)}
+                  />
+                  <div className="mb-2">
+                    <label className="font-semibold">Project Description (Points)</label>
+                    {Array.isArray(project.description) &&
+                      project.description.map((point, descIndex) => (
+                        <div key={descIndex} className="flex gap-2 items-center mb-1">
+                          <textarea
+                            className="input input-bordered w-full bg-slate-300 h-16"
+                            value={point}
+                            placeholder={`Point ${descIndex + 1}`}
+                            onChange={e =>
+                              updateDescriptionPoint(index, descIndex, e.target.value)
+                            }
+                          />
+                          {descIndex > 0 && (
+                            <button
+                              type="button"
+                              className="btn btn-error btn-xs"
+                              onClick={() => removeDescriptionPoint(index, descIndex)}
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-sm mt-1"
+                      onClick={() => addDescriptionPoint(index)}
+                    >
+                      + Add Point
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-sm mt-2 bg-purple-600 text-white"
+                onClick={addProjectField}
+              >
+                + Add Project
+              </button>
+            </div> */}
+
+
+
+            {/* Photo upload */}
+            <div>
+              <label className="font-semibold">Photo</label>
+              <input
+                type="file"
+                accept="image/*"
+                className="file-input file-input-bordered w-full bg-slate-300"
+                onChange={handleFileChange}
+              />
+            </div>
+
+            <div className="flex gap-2 justify-center">
+              <button
+                type="submit"
+                className="px-3 py-2 rounded-md  bg-purple-600 text-white"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </button>
+              <button
+                type="button"
+                className="px-3 py-2 rounded-md  bg-gray-600 text-white"
+                onClick={handleCloseModal}
+              >
+                Close
+              </button>
+            </div>
+          </form>
+        </div>
+      </dialog>
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
     </div>
   );
 }
 
+<<<<<<< HEAD
 export default Page;
+=======
+export default Page;
+>>>>>>> 74a634e42efaa1fa9d625c35472eb24ba2e7e00f
